@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     qs.set('hideBranding', '1');
   }
   
-  const url = `templates/${templateId}/template.html?${qs.toString()}`;
+  const url = `${templateId}.html?${qs.toString()}`;
   frame.src = url;
   frame.classList.remove('hidden');
   hideLoader();

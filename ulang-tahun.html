@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ulang Tahun</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #fef3c7, #fce7f3, #ede9fe);
+      padding: 2rem 1rem;
+      overflow: hidden;
+    }
+    .card {
+      background: rgba(255,255,255,0.9);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(251,191,36,0.2);
+      animation: fadeUp 0.8s ease;
+      position: relative;
+      z-index: 2;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .photo {
+      width: 110px; height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 1.2rem;
+      border: 4px solid #fbbf24;
+      box-shadow: 0 0 20px rgba(251,191,36,0.4);
+    }
+    .title {
+      font-family: 'Great Vibes', cursive;
+      font-size: 2.6rem;
+      background: linear-gradient(135deg, #fbbf24, #f472b6, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.4rem;
+    }
+    .name { font-weight: 600; color: #64748b; margin-bottom: 1rem; font-size: 1.15rem; }
+    .message { color: #475569; line-height: 1.7; margin-bottom: 1rem; }
+    .confetti { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
+    .piece {
+      position: absolute;
+      width: 10px; height: 10px;
+      animation: fall 4s linear infinite;
+    }
+    @keyframes fall {
+      0% { transform: translateY(-10vh) rotate(0); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+    .branding { margin-top: 1.5rem; font-size: 0.8rem; color: #94a3b8; }
+    .branding a {
+      font-family: 'Great Vibes', cursive;
+      background: linear-gradient(135deg, #38bdf8, #f472b6, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="confetti" id="confetti"></div>
+  <div class="card">
+    <img class="photo" id="photo" src="https://images.unsplash.com/photo-1464349153735-7db55fd30e4e?w=200&q=80" alt="Foto">
+    <h1 class="title" id="title">Selamat Ulang Tahun!</h1>
+    <p class="name" id="name">Untuk kamu</p>
+    <p class="message" id="message">Semoga di usia yang baru ini, semua impianmu terwujud dan kebahagiaan selalu menyertaimu.</p>
+  </div>
+  <div class="branding" id="branding">
+    Dibuat dengan <a href="index.html">𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</a>
+  </div>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('title')) document.getElementById('title').textContent = params.get('title');
+    if (params.get('recipient') || params.get('name')) document.getElementById('name').textContent = params.get('recipient') || params.get('name');
+    if (params.get('message')) document.getElementById('message').textContent = params.get('message');
+    if (params.get('photo')) document.getElementById('photo').src = params.get('photo');
+    if (params.get('hideBranding') === '1') document.getElementById('branding').style.display = 'none';
+    
+    // Confetti
+    const colors = ['#fbbf24','#f472b6','#a78bfa','#38bdf8','#34d399','#f87171'];
+    for (let i = 0; i < 40; i++) {
+      const p = document.createElement('div');
+      p.className = 'piece';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.background = colors[Math.floor(Math.random() * colors.length)];
+      p.style.animationDelay = Math.random() * 4 + 's';
+      p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      document.getElementById('confetti').appendChild(p);
+    }
+  </script>
+</body>
+</html>

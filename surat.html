@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Surat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Cormorant Garamond', serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #f5f0e8;
+      padding: 2rem 1rem;
+    }
+    .paper {
+      background: #fffef7;
+      max-width: 480px;
+      width: 100%;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
+      position: relative;
+      animation: fadeUp 0.8s ease;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .title {
+      font-family: 'Great Vibes', cursive;
+      font-size: 2.4rem;
+      text-align: center;
+      color: #7c3aed;
+      margin-bottom: 1.5rem;
+    }
+    .to { font-style: italic; color: #64748b; margin-bottom: 1.2rem; font-size: 1.15rem; }
+    .body { font-size: 1.15rem; line-height: 1.9; color: #334155; white-space: pre-wrap; margin-bottom: 2rem; }
+    .from { text-align: right; font-style: italic; color: #64748b; font-size: 1.1rem; }
+    .branding { margin-top: 1.5rem; font-size: 0.8rem; color: #94a3b8; font-family: Inter, sans-serif; }
+    .branding a {
+      font-family: 'Great Vibes', cursive;
+      background: linear-gradient(135deg, #38bdf8, #f472b6, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="paper">
+    <h1 class="title" id="title">Surat untukmu</h1>
+    <p class="to" id="name">Kepada: Seseorang yang spesial</p>
+    <div class="body" id="message">Aku menulis surat ini karena ada banyak hal yang ingin kusampaikan. Terima kasih sudah hadir dalam hidupku.</div>
+    <p class="from" id="from">Dengan cinta</p>
+  </div>
+  <div class="branding" id="branding">
+    Dibuat dengan <a href="index.html">𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</a>
+  </div>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('title')) document.getElementById('title').textContent = params.get('title');
+    if (params.get('recipient') || params.get('name')) document.getElementById('name').textContent = 'Kepada: ' + (params.get('recipient') || params.get('name'));
+    if (params.get('message')) document.getElementById('message').textContent = params.get('message');
+    if (params.get('hideBranding') === '1') document.getElementById('branding').style.display = 'none';
+  </script>
+</body>
+</html>

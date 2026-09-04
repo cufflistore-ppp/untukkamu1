@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nembak</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #fce7f3, #ede9fe, #dbeafe);
+      padding: 1.5rem;
+      overflow: hidden;
+    }
+    .card {
+      background: rgba(255,255,255,0.92);
+      border-radius: 24px;
+      padding: 2rem 1.5rem;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(244,114,182,0.2);
+      position: relative;
+      z-index: 2;
+    }
+    .photo {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 1.2rem;
+      border: 3px solid #f9a8d4;
+    }
+    .title {
+      font-family: 'Great Vibes', cursive;
+      font-size: 2.4rem;
+      background: linear-gradient(135deg, #38bdf8, #f472b6, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.4rem;
+    }
+    .name { font-weight: 600; color: #64748b; margin-bottom: 1rem; }
+    .message { color: #475569; line-height: 1.6; margin-bottom: 1.8rem; font-size: 0.95rem; }
+    .buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      padding: 0.8rem 1.8rem;
+      border-radius: 50px;
+      border: none;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .btn-yes {
+      background: linear-gradient(135deg, #34d399, #10b981);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(16,185,129,0.3);
+    }
+    .btn-yes:hover { transform: scale(1.05); }
+    .btn-no {
+      background: #f1f5f9;
+      color: #64748b;
+      position: relative;
+    }
+    .result {
+      display: none;
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border-radius: 16px;
+      font-weight: 600;
+      animation: pop 0.4s ease;
+    }
+    .result.show { display: block; }
+    .result.yes { background: #d1fae5; color: #065f46; }
+    .result.no { background: #fce7f3; color: #9d174d; }
+    @keyframes pop {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .hearts {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .heart {
+      position: absolute;
+      font-size: 1.2rem;
+      animation: floatUp 3s ease-in forwards;
+      opacity: 0.7;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) rotate(0); opacity: 0.8; }
+      100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+    }
+    .branding {
+      margin-top: 1.5rem;
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+    .branding a {
+      font-family: 'Great Vibes', cursive;
+      background: linear-gradient(135deg, #38bdf8, #f472b6, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="hearts" id="hearts"></div>
+  <div class="card">
+    <img class="photo" id="photo" src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=200&q=80" alt="Foto">
+    <h1 class="title" id="title">Maukah Kamu?</h1>
+    <p class="name" id="name">Untuk kamu yang spesial</p>
+    <p class="message" id="message">Aku punya sesuatu yang ingin aku sampaikan... Maukah kamu menjadi bagian dari hidupku?</p>
+    <div class="buttons" id="buttons">
+      <button class="btn btn-yes" id="btnYes">Ya!</button>
+      <button class="btn btn-no" id="btnNo">Tidak</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+  <div class="branding" id="branding">
+    Dibuat dengan <a href="index.html">𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</a>
+  </div>
+  
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('title')) document.getElementById('title').textContent = params.get('title');
+    if (params.get('name')) document.getElementById('name').textContent = params.get('name');
+    if (params.get('message')) document.getElementById('message').textContent = params.get('message');
+    if (params.get('photo')) document.getElementById('photo').src = params.get('photo');
+    if (params.get('hideBranding') === '1') document.getElementById('branding').style.display = 'none';
+    
+    const btnNo = document.getElementById('btnNo');
+    const btnYes = document.getElementById('btnYes');
+    const result = document.getElementById('result');
+    let noCount = 0;
+    
+    // Playful: "Tidak" button runs away
+    btnNo.addEventListener('mouseover', () => {
+      if (noCount < 5) {
+        const x = Math.random() * 120 - 60;
+        const y = Math.random() * 80 - 40;
+        btnNo.style.transform = `translate(${x}px, ${y}px)`;
+        noCount++;
+      }
+    });
+    
+    btnNo.addEventListener('click', () => {
+      result.textContent = 'Yah... coba pikir lagi ya?';
+      result.className = 'result show no';
+    });
+    
+    btnYes.addEventListener('click', () => {
+      result.textContent = 'Yeeay! Terima kasih sudah menjawab Ya!';
+      result.className = 'result show yes';
+      document.getElementById('buttons').style.display = 'none';
+      // Hearts animation
+      for (let i = 0; i < 20; i++) {
+        setTimeout(() => {
+          const h = document.createElement('div');
+          h.className = 'heart';
+          h.textContent = '♥';
+          h.style.left = Math.random() * 100 + '%';
+          h.style.color = ['#f472b6', '#a78bfa', '#38bdf8', '#f9a8d4'][Math.floor(Math.random()*4)];
+          document.getElementById('hearts').appendChild(h);
+          setTimeout(() => h.remove(), 3000);
+        }, i * 100);
+      }
+    });
+  </script>
+</body>
+</html>

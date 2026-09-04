@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Styles -->
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <!-- Page Loader -->
@@ -24,37 +24,22 @@
     <div class="loader-text">𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</div>
   </div>
 
-  <!-- Navbar -->
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <a href="index.html" class="top-bar-brand" data-nav>𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</a>
+    <button class="theme-toggle" aria-label="Ganti tema"><i class="fa-solid fa-moon"></i></button>
+  </div>
+
+  <!-- Bottom Navbar -->
   <nav class="navbar">
     <div class="navbar-inner">
-      <a href="index.html" class="nav-brand" data-nav>𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</a>
-      
       <div class="nav-links">
-        <a href="template.html" class="nav-link" data-nav><i class="fa-solid fa-file"></i> Template</a>
-        <a href="proyek.html" class="nav-link" data-nav><i class="fa-solid fa-folder"></i> Proyek</a>
-        <a href="index.html" class="nav-link active" data-nav><i class="fa-solid fa-house"></i> Beranda</a>
-        <a href="about.html" class="nav-link" data-nav><i class="fa-solid fa-circle-info"></i> Tentang</a>
-        <a href="profile.html" class="nav-link" data-nav><i class="fa-solid fa-user"></i> Saya</a>
+        <a href="template.html" class="nav-link" data-nav><i class="fa-solid fa-file"></i><span>Template</span></a>
+        <a href="proyek.html" class="nav-link" data-nav><i class="fa-solid fa-folder"></i><span>Proyek</span></a>
+        <a href="index.html" class="nav-link active" data-nav><i class="fa-solid fa-house"></i><span>Beranda</span></a>
+        <a href="about.html" class="nav-link" data-nav><i class="fa-solid fa-circle-info"></i><span>Tentang</span></a>
+        <a href="profile.html" class="nav-link" data-nav><i class="fa-solid fa-user"></i><span>Saya</span></a>
       </div>
-      
-      <div class="nav-actions">
-        <button class="theme-toggle" aria-label="Ganti tema"><i class="fa-solid fa-moon"></i></button>
-        <a href="login.html" class="btn btn-primary btn-sm auth-guest" data-nav><i class="fa-solid fa-user"></i> Masuk</a>
-        <a href="profile.html" class="btn btn-secondary btn-sm auth-user hidden" data-nav>
-          <span class="user-display-name">User</span>
-        </a>
-        <button class="nav-toggle" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
-      </div>
-    </div>
-    
-    <!-- Mobile Menu -->
-    <div class="mobile-menu">
-      <a href="template.html" class="nav-link" data-nav><i class="fa-solid fa-file"></i> Template</a>
-      <a href="proyek.html" class="nav-link" data-nav><i class="fa-solid fa-folder"></i> Proyek</a>
-      <a href="index.html" class="nav-link active" data-nav><i class="fa-solid fa-house"></i> Beranda</a>
-      <a href="about.html" class="nav-link" data-nav><i class="fa-solid fa-circle-info"></i> Tentang</a>
-      <a href="profile.html" class="nav-link" data-nav><i class="fa-solid fa-user"></i> Saya</a>
-      <a href="login.html" class="nav-link auth-guest" data-nav><i class="fa-solid fa-right-to-bracket"></i> Masuk</a>
     </div>
   </nav>
 
@@ -222,8 +207,8 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
   
-  <script src="js/firebase-config.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/index.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="auth.js"></script>
+  <script src="index.js"></script>
 </body>
 </html>

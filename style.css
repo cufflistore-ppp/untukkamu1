@@ -198,79 +198,79 @@ p {
   50% { box-shadow: 0 0 30px rgba(249,168,212,0.5), 0 0 45px rgba(196,181,253,0.3); }
 }
 
-/* ---------- Navbar ---------- */
+/* ---------- Bottom Navbar ---------- */
 .navbar {
   position: fixed;
-  top: 0;
+  bottom: 0;
   left: 0;
   right: 0;
   height: var(--nav-height);
   background: var(--bg-navbar);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border-color);
+  border-top: 1px solid var(--border-color);
   z-index: 1000;
   transition: background var(--transition), border-color var(--transition);
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
 }
 
 .navbar-inner {
-  max-width: 1200px;
+  max-width: 600px;
   margin: 0 auto;
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 1.25rem;
+  justify-content: space-around;
+  padding: 0 0.5rem;
 }
 
 .nav-brand {
-  font-family: 'Great Vibes', cursive;
-  font-size: 1.7rem;
-  background: var(--gradient-main);
-  background-size: 200% 200%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: gradientShift 6s ease infinite;
-  white-space: nowrap;
+  display: none;
 }
 
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  justify-content: space-around;
+  width: 100%;
+  gap: 0;
 }
 
 .nav-link {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.55rem 0.9rem;
+  justify-content: center;
+  gap: 0.2rem;
+  padding: 0.4rem 0.5rem;
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
-  font-size: 0.92rem;
+  font-size: 0.7rem;
   font-weight: 500;
   transition: all var(--transition);
+  min-width: 56px;
+  text-align: center;
 }
 
 .nav-link i {
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 
 .nav-link:hover,
 .nav-link.active {
-  color: var(--text-primary);
-  background: var(--gradient-soft);
+  color: var(--pink-deep);
+  background: transparent;
 }
 
-.nav-link.active {
-  box-shadow: 0 0 12px rgba(125,211,252,0.2);
+.nav-link.active i {
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
+  display: none;
 }
 
 .theme-toggle {
@@ -293,42 +293,34 @@ p {
   box-shadow: var(--shadow-glow);
 }
 
-/* Mobile Menu */
-.nav-toggle {
-  display: none;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--text-primary);
-  font-size: 1.3rem;
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-}
-
+.nav-toggle,
 .mobile-menu {
-  display: none;
-  position: fixed;
-  top: var(--nav-height);
-  left: 0;
-  right: 0;
-  background: var(--bg-secondary);
+  display: none !important;
+}
+
+/* Top bar (brand + theme) */
+.top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  background: var(--bg-navbar);
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-color);
-  padding: 1rem;
-  z-index: 999;
-  flex-direction: column;
-  gap: 0.3rem;
-  box-shadow: var(--shadow);
-}
-
-.mobile-menu.open {
+  padding: 0.75rem 1.25rem;
   display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.mobile-menu .nav-link {
-  padding: 0.85rem 1rem;
-  border-radius: var(--radius-sm);
+.top-bar-brand {
+  font-family: 'Great Vibes', cursive;
+  font-size: 1.5rem;
+  background: var(--gradient-main);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 6s ease infinite;
 }
 
 /* ---------- Buttons ---------- */
@@ -455,8 +447,8 @@ p {
 }
 
 .page-content {
-  padding-top: calc(var(--nav-height) + 1.5rem);
-  padding-bottom: 3rem;
+  padding-top: 1rem;
+  padding-bottom: calc(var(--nav-height) + 2rem);
   min-height: 100vh;
 }
 
