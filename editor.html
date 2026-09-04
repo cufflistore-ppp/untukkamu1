@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor — 𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="page-loader">
+    <div class="loader-spinner"></div>
+    <div class="loader-text">𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</div>
+  </div>
+
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="nav-brand" data-nav>𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</a>
+      <div class="nav-actions">
+        <span id="editCounter" style="font-size: 0.85rem; color: var(--text-secondary); margin-right: 0.5rem;"></span>
+        <button class="btn btn-secondary btn-sm" id="previewBtn"><i class="fa-solid fa-eye"></i> Preview</button>
+        <button class="btn btn-primary btn-sm" id="saveBtn"><i class="fa-solid fa-check"></i> Simpan</button>
+        <a href="proyek.html" class="btn btn-outline btn-sm" data-nav><i class="fa-solid fa-arrow-left"></i></a>
+        <button class="theme-toggle"><i class="fa-solid fa-moon"></i></button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-content">
+    <div class="container">
+      <div class="editor-layout">
+        <!-- Sidebar -->
+        <div class="editor-sidebar">
+          <h3 class="mb-2"><i class="fa-solid fa-pen"></i> Edit Project</h3>
+          
+          <div class="form-group">
+            <label class="form-label">Judul</label>
+            <input type="text" id="editTitle" class="form-input" placeholder="Judul">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Nama / Penerima</label>
+            <input type="text" id="editName" class="form-input" placeholder="Nama penerima">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Pesan</label>
+            <textarea id="editMessage" class="form-textarea" placeholder="Tulis pesanmu..."></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Foto</label>
+            <input type="file" id="editPhoto" class="form-input" accept="image/*">
+            <div id="photoPreviewBox" class="mt-1 hidden">
+              <img id="photoPreview" style="max-width: 100%; border-radius: 10px; max-height: 150px;">
+              <button class="btn btn-danger btn-sm mt-1" id="removePhoto"><i class="fa-solid fa-trash"></i> Hapus Foto</button>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Warna Tema</label>
+            <div class="color-picker-row">
+              <div class="color-swatch active" style="background: #7dd3fc;" data-color="#7dd3fc"></div>
+              <div class="color-swatch" style="background: #f9a8d4;" data-color="#f9a8d4"></div>
+              <div class="color-swatch" style="background: #c4b5fd;" data-color="#c4b5fd"></div>
+              <div class="color-swatch" style="background: #fbbf24;" data-color="#fbbf24"></div>
+              <div class="color-swatch" style="background: #34d399;" data-color="#34d399"></div>
+              <div class="color-swatch" style="background: #f87171;" data-color="#f87171"></div>
+            </div>
+          </div>
+          
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem;">
+            <i class="fa-solid fa-circle-info"></i> Perubahan langsung terlihat di preview.
+          </p>
+        </div>
+        
+        <!-- Preview -->
+        <div class="editor-preview">
+          <iframe id="previewFrame" src="about:blank"></iframe>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/editor.js"></script>
+</body>
+</html>

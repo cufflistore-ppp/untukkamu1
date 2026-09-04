@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Template — 𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="page-loader">
+    <div class="loader-spinner"></div>
+    <div class="loader-text">𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</div>
+  </div>
+
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="nav-brand" data-nav>𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</a>
+      <div class="nav-links">
+        <a href="template.html" class="nav-link active" data-nav><i class="fa-solid fa-file"></i> Template</a>
+        <a href="proyek.html" class="nav-link" data-nav><i class="fa-solid fa-folder"></i> Proyek</a>
+        <a href="index.html" class="nav-link" data-nav><i class="fa-solid fa-house"></i> Beranda</a>
+        <a href="about.html" class="nav-link" data-nav><i class="fa-solid fa-circle-info"></i> Tentang</a>
+        <a href="profile.html" class="nav-link" data-nav><i class="fa-solid fa-user"></i> Saya</a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle"><i class="fa-solid fa-moon"></i></button>
+        <a href="login.html" class="btn btn-primary btn-sm auth-guest" data-nav><i class="fa-solid fa-user"></i> Masuk</a>
+        <a href="profile.html" class="btn btn-secondary btn-sm auth-user hidden" data-nav><span class="user-display-name">User</span></a>
+        <button class="nav-toggle"><i class="fa-solid fa-bars"></i></button>
+      </div>
+    </div>
+    <div class="mobile-menu">
+      <a href="template.html" class="nav-link active" data-nav><i class="fa-solid fa-file"></i> Template</a>
+      <a href="proyek.html" class="nav-link" data-nav><i class="fa-solid fa-folder"></i> Proyek</a>
+      <a href="index.html" class="nav-link" data-nav><i class="fa-solid fa-house"></i> Beranda</a>
+      <a href="about.html" class="nav-link" data-nav><i class="fa-solid fa-circle-info"></i> Tentang</a>
+      <a href="profile.html" class="nav-link" data-nav><i class="fa-solid fa-user"></i> Saya</a>
+    </div>
+  </nav>
+
+  <main class="page-content">
+    <div class="container">
+      <div class="section-title">
+        <i class="fa-solid fa-file"></i>
+        <h1>Katalog Template</h1>
+      </div>
+      
+      <!-- Filter Tabs -->
+      <div class="flex gap-1 mb-3 flex-wrap">
+        <button class="btn btn-primary btn-sm filter-btn active" data-filter="all">Semua</button>
+        <button class="btn btn-secondary btn-sm filter-btn" data-filter="free"><i class="fa-solid fa-gift"></i> Gratis</button>
+        <button class="btn btn-secondary btn-sm filter-btn" data-filter="paid"><i class="fa-solid fa-cart-shopping"></i> Berbayar</button>
+      </div>
+      
+      <div class="grid grid-3" id="templateGrid">
+        <!-- Templates will be loaded here -->
+      </div>
+      
+      <div class="empty-state hidden" id="emptyTemplates">
+        <i class="fa-solid fa-folder-open"></i>
+        <p>Belum ada template tersedia.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</div>
+        <p style="font-size: 0.9rem; color: var(--text-secondary);">Buat sesuatu yang spesial.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">&copy; 2026 𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/templates.js"></script>
+</body>
+</html>

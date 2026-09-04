@@ -1,0 +1,36 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.email == 'raffliraffli649@gmail.com';
+    }
+
+    // Bukti top up - user hanya upload ke folder miliknya
+    match /topups/{userId}/{fileName} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow write: if isSignedIn()
+        && request.auth.uid == userId
+        && request.resource.size < 5 * 1024 * 1024  // max 5MB
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // Foto project - user hanya upload ke folder miliknya
+    match /projects/{userId}/{fileName} {
+      allow read: if true; // foto project bisa dilihat publik
+      allow write: if isSignedIn()
+        && request.auth.uid == userId
+        && request.resource.size < 3 * 1024 * 1024  // max 3MB
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // Default: tolak semua yang lain
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

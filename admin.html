@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel — 𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="page-loader">
+    <div class="loader-spinner"></div>
+    <div class="loader-text">𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</div>
+  </div>
+
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="nav-brand" data-nav>𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</a>
+      <div class="nav-actions">
+        <span style="font-size: 0.9rem; color: var(--text-secondary);">Admin Panel</span>
+        <button class="theme-toggle"><i class="fa-solid fa-moon"></i></button>
+        <a href="profile.html" class="btn btn-secondary btn-sm" data-nav><i class="fa-solid fa-arrow-left"></i> Kembali</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-content">
+    <div class="container">
+      <div class="section-title">
+        <i class="fa-solid fa-gear"></i>
+        <h1>Admin Panel</h1>
+      </div>
+      
+      <div id="accessDenied" class="hidden">
+        <div class="empty-state">
+          <i class="fa-solid fa-shield-halved"></i>
+          <h2>Akses Ditolak</h2>
+          <p>Hanya admin yang diizinkan mengakses halaman ini.</p>
+          <a href="index.html" class="btn btn-primary mt-2" data-nav>Kembali</a>
+        </div>
+      </div>
+      
+      <div id="adminContent" class="hidden">
+        <!-- Tabs -->
+        <div class="flex gap-1 mb-3 flex-wrap">
+          <button class="btn btn-primary btn-sm admin-tab active" data-tab="topups">Top Up</button>
+          <button class="btn btn-secondary btn-sm admin-tab" data-tab="users">Users</button>
+          <button class="btn btn-secondary btn-sm admin-tab" data-tab="templates">Templates</button>
+          <button class="btn btn-secondary btn-sm admin-tab" data-tab="projects">Projects</button>
+        </div>
+        
+        <!-- Top Ups -->
+        <div id="tab-topups">
+          <h2 class="mb-2">Permintaan Top Up</h2>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Email</th>
+                  <th>Nominal</th>
+                  <th>Status</th>
+                  <th>Waktu</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="topupsTable">
+                <tr><td colspan="5" style="text-align:center; color: var(--text-muted);">Memuat...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- Users -->
+        <div id="tab-users" class="hidden">
+          <h2 class="mb-2">Daftar User</h2>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nama</th>
+                  <th>Email</th>
+                  <th>Saldo</th>
+                  <th>Proyek</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="usersTable">
+                <tr><td colspan="5" style="text-align:center; color: var(--text-muted);">Memuat...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- Templates -->
+        <div id="tab-templates" class="hidden">
+          <div class="flex items-center justify-between mb-2">
+            <h2>Kelola Template</h2>
+            <button class="btn btn-primary btn-sm" id="addTemplateBtn"><i class="fa-solid fa-plus"></i> Tambah</button>
+          </div>
+          <div class="grid grid-3" id="adminTemplates">
+            <p style="color: var(--text-muted);">Gunakan sample templates atau tambah via Firestore.</p>
+          </div>
+        </div>
+        
+        <!-- Projects -->
+        <div id="tab-projects" class="hidden">
+          <h2 class="mb-2">Semua Project</h2>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Kode</th>
+                  <th>Nama</th>
+                  <th>Owner</th>
+                  <th>Template</th>
+                  <th>Edit</th>
+                </tr>
+              </thead>
+              <tbody id="projectsTable">
+                <tr><td colspan="5" style="text-align:center; color: var(--text-muted);">Memuat...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal Add Balance -->
+  <div class="modal-overlay" id="balanceModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Tambah Saldo</h3>
+        <button class="modal-close" id="closeBalanceModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">User</label>
+        <input type="text" id="balanceUserEmail" class="form-input" readonly>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nominal</label>
+        <input type="number" id="balanceAmount" class="form-input" placeholder="5000" min="1">
+      </div>
+      <button class="btn btn-primary w-full" id="confirmAddBalance">
+        <i class="fa-solid fa-check"></i> Tambah Saldo
+      </button>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
