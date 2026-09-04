@@ -3,102 +3,227 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Untuk Kamu</title>
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Inter', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #fdf2f8, #ede9fe, #e0f2fe);
-      padding: 2rem 1rem;
-      color: #1e293b;
-    }
-    .card {
-      background: rgba(255,255,255,0.9);
-      backdrop-filter: blur(12px);
-      border-radius: 24px;
-      padding: 2.5rem 2rem;
-      max-width: 420px;
-      width: 100%;
-      text-align: center;
-      box-shadow: 0 20px 60px rgba(168,85,247,0.15);
-      animation: fadeUp 0.8s ease;
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .photo {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin: 0 auto 1.5rem;
-      border: 4px solid #f9a8d4;
-      box-shadow: 0 0 20px rgba(249,168,212,0.4);
-    }
-    .title {
-      font-family: 'Great Vibes', cursive;
-      font-size: 2.8rem;
-      background: linear-gradient(135deg, #38bdf8, #f472b6, #a78bfa);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 0.5rem;
-    }
-    .recipient {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: #64748b;
-      margin-bottom: 1.2rem;
-    }
-    .message {
-      font-size: 1rem;
-      line-height: 1.7;
-      color: #475569;
-      margin-bottom: 1.5rem;
-    }
-    .branding {
-      margin-top: 2rem;
-      font-size: 0.8rem;
-      color: #94a3b8;
-    }
-    .branding a {
-      font-family: 'Great Vibes', cursive;
-      font-size: 1rem;
-      background: linear-gradient(135deg, #38bdf8, #f472b6, #a78bfa);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-decoration: none;
-    }
-  </style>
+  <title>𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾 — Buat Sesuatu yang Spesial</title>
+  <meta name="description" content="Buat project digital yang spesial untuk seseorang. Template gratis & berbayar, mudah dibagikan lewat link.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="card">
-    <img class="photo" id="photo" src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=200&q=80" alt="Foto">
-    <h1 class="title" id="title">Untuk Kamu</h1>
-    <p class="recipient" id="recipient">Untuk seseorang yang spesial</p>
-    <p class="message" id="message">
-      Terima kasih sudah menjadi bagian dari hidupku. 
-      Semoga hari-harimu selalu indah dan penuh kebahagiaan.
-    </p>
+  <!-- Page Loader -->
+  <div id="page-loader">
+    <div class="loader-spinner"></div>
+    <div class="loader-text">𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</div>
   </div>
-  <div class="branding" id="branding">
-    Dibuat dengan <a href="../../index.html">𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</a>
-  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="nav-brand" data-nav>𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</a>
+      
+      <div class="nav-links">
+        <a href="template.html" class="nav-link" data-nav><i class="fa-solid fa-file"></i> Template</a>
+        <a href="proyek.html" class="nav-link" data-nav><i class="fa-solid fa-folder"></i> Proyek</a>
+        <a href="index.html" class="nav-link active" data-nav><i class="fa-solid fa-house"></i> Beranda</a>
+        <a href="about.html" class="nav-link" data-nav><i class="fa-solid fa-circle-info"></i> Tentang</a>
+        <a href="profile.html" class="nav-link" data-nav><i class="fa-solid fa-user"></i> Saya</a>
+      </div>
+      
+      <div class="nav-actions">
+        <button class="theme-toggle" aria-label="Ganti tema"><i class="fa-solid fa-moon"></i></button>
+        <a href="login.html" class="btn btn-primary btn-sm auth-guest" data-nav><i class="fa-solid fa-user"></i> Masuk</a>
+        <a href="profile.html" class="btn btn-secondary btn-sm auth-user hidden" data-nav>
+          <span class="user-display-name">User</span>
+        </a>
+        <button class="nav-toggle" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+      </div>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu">
+      <a href="template.html" class="nav-link" data-nav><i class="fa-solid fa-file"></i> Template</a>
+      <a href="proyek.html" class="nav-link" data-nav><i class="fa-solid fa-folder"></i> Proyek</a>
+      <a href="index.html" class="nav-link active" data-nav><i class="fa-solid fa-house"></i> Beranda</a>
+      <a href="about.html" class="nav-link" data-nav><i class="fa-solid fa-circle-info"></i> Tentang</a>
+      <a href="profile.html" class="nav-link" data-nav><i class="fa-solid fa-user"></i> Saya</a>
+      <a href="login.html" class="nav-link auth-guest" data-nav><i class="fa-solid fa-right-to-bracket"></i> Masuk</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="page-content">
+    <div class="container">
+      
+      <!-- Hero Banner Slider -->
+      <section class="hero">
+        <div class="hero-slider" id="heroSlider">
+          <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=1200&q=80');"></div>
+          <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=1200&q=80');"></div>
+          <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=1200&q=80');"></div>
+        </div>
+        <div class="hero-overlay">
+          <h1 class="brand-title">𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</h1>
+          <p class="hero-tagline">Buat sesuatu yang spesial untuk seseorang yang berarti.</p>
+          <a href="template.html" class="btn btn-primary btn-lg" data-nav>
+            <i class="fa-solid fa-plus"></i> Mulai Buat
+          </a>
+        </div>
+        <div class="hero-dots" id="heroDots">
+          <span class="hero-dot active" data-index="0"></span>
+          <span class="hero-dot" data-index="1"></span>
+          <span class="hero-dot" data-index="2"></span>
+        </div>
+      </section>
+
+      <!-- Intro -->
+      <section class="section text-center">
+        <h2>Platform untuk membuat project personal yang cantik</h2>
+        <p style="max-width: 600px; margin: 0.8rem auto 0;">
+          Pilih template, edit sesuai keinginan, lalu bagikan lewat link permanen. 
+          Cocok untuk surat, ulang tahun, nembak, undangan, dan banyak lagi.
+        </p>
+      </section>
+
+      <!-- Recommended Templates -->
+      <section class="section">
+        <div class="section-title">
+          <i class="fa-solid fa-star"></i>
+          <h2>Template Rekomendasi</h2>
+        </div>
+        <div class="grid grid-3" id="recommendedTemplates">
+          <!-- Populated by JS -->
+          <div class="card template-card card-glow">
+            <div class="template-thumb">
+              <img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&q=80" alt="Untuk Kamu" loading="lazy">
+              <span class="template-badge badge-free">Gratis</span>
+            </div>
+            <div class="template-body">
+              <h3 class="template-name">Untuk Kamu</h3>
+              <p class="template-desc">Template personal dengan foto, pesan, dan animasi elegan.</p>
+              <div class="template-meta">
+                <span class="template-price">Gratis</span>
+              </div>
+              <div class="template-actions">
+                <a href="detail.html?id=untuk-kamu" class="btn btn-secondary btn-sm" data-nav><i class="fa-solid fa-eye"></i> Preview</a>
+                <a href="detail.html?id=untuk-kamu" class="btn btn-primary btn-sm" data-nav><i class="fa-solid fa-plus"></i> Gunakan</a>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card template-card card-glow">
+            <div class="template-thumb">
+              <img src="https://images.unsplash.com/photo-1464349153735-7db55fd30e4e?w=600&q=80" alt="Ulang Tahun" loading="lazy">
+              <span class="template-badge badge-free">Gratis</span>
+            </div>
+            <div class="template-body">
+              <h3 class="template-name">Ulang Tahun</h3>
+              <p class="template-desc">Ucapan ulang tahun interaktif dengan foto dan animasi confetti.</p>
+              <div class="template-meta">
+                <span class="template-price">Gratis</span>
+              </div>
+              <div class="template-actions">
+                <a href="detail.html?id=ulang-tahun" class="btn btn-secondary btn-sm" data-nav><i class="fa-solid fa-eye"></i> Preview</a>
+                <a href="detail.html?id=ulang-tahun" class="btn btn-primary btn-sm" data-nav><i class="fa-solid fa-plus"></i> Gunakan</a>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card template-card card-glow">
+            <div class="template-thumb">
+              <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&q=80" alt="Nembak" loading="lazy">
+              <span class="template-badge badge-paid">Berbayar</span>
+            </div>
+            <div class="template-body">
+              <h3 class="template-name">Nembak</h3>
+              <p class="template-desc">Template interaktif playful untuk menyatakan perasaan.</p>
+              <div class="template-meta">
+                <span class="template-price">Rp5.000</span>
+              </div>
+              <div class="template-actions">
+                <a href="detail.html?id=nembak" class="btn btn-secondary btn-sm" data-nav><i class="fa-solid fa-eye"></i> Preview</a>
+                <a href="detail.html?id=nembak" class="btn btn-primary btn-sm" data-nav><i class="fa-solid fa-cart-shopping"></i> Beli</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="text-center mt-3">
+          <a href="template.html" class="btn btn-outline" data-nav>
+            <i class="fa-solid fa-file"></i> Lihat Semua Template
+          </a>
+        </div>
+      </section>
+
+      <!-- Features -->
+      <section class="section">
+        <div class="section-title">
+          <i class="fa-solid fa-sparkles"></i>
+          <h2>Kenapa 𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾?</h2>
+        </div>
+        <div class="grid grid-3">
+          <div class="card" style="padding: 1.5rem; text-align: center;">
+            <i class="fa-solid fa-palette" style="font-size: 2rem; margin-bottom: 0.8rem; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+            <h3>Mudah Diedit</h3>
+            <p>Ubah teks, warna, foto, dan animasi sesuai keinginanmu.</p>
+          </div>
+          <div class="card" style="padding: 1.5rem; text-align: center;">
+            <i class="fa-solid fa-link" style="font-size: 2rem; margin-bottom: 0.8rem; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+            <h3>Link Permanen</h3>
+            <p>Setiap project mendapat kode unik dan link yang bisa dibagikan.</p>
+          </div>
+          <div class="card" style="padding: 1.5rem; text-align: center;">
+            <i class="fa-solid fa-mobile-screen" style="font-size: 2rem; margin-bottom: 0.8rem; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+            <h3>Responsif</h3>
+            <p>Tampil sempurna di HP, tablet, laptop, maupun PC.</p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</div>
+        <p style="font-size: 0.9rem; color: var(--text-secondary);">Buat sesuatu yang spesial untuk seseorang.</p>
+      </div>
+      <div class="footer-links">
+        <h4 style="margin-bottom: 0.7rem;">Navigasi</h4>
+        <a href="template.html" data-nav>Template</a>
+        <a href="proyek.html" data-nav>Proyek Saya</a>
+        <a href="about.html" data-nav>Tentang</a>
+        <a href="profile.html" data-nav>Akun Saya</a>
+      </div>
+      <div class="footer-links">
+        <h4 style="margin-bottom: 0.7rem;">Bantuan</h4>
+        <a href="topup.html" data-nav>Top Up Saldo</a>
+        <a href="about.html" data-nav>Kebijakan</a>
+        <a href="about.html" data-nav>Kontak</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾. All rights reserved.
+    </div>
+  </footer>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
   
-  <script>
-    // Load project data from parent or URL params (for editor preview / public)
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('title')) document.getElementById('title').textContent = params.get('title');
-    if (params.get('recipient')) document.getElementById('recipient').textContent = params.get('recipient');
-    if (params.get('message')) document.getElementById('message').textContent = params.get('message');
-    if (params.get('photo')) document.getElementById('photo').src = params.get('photo');
-    if (params.get('hideBranding') === '1') document.getElementById('branding').style.display = 'none';
-  </script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/index.js"></script>
 </body>
 </html>

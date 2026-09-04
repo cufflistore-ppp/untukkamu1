@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <i class="fa-solid fa-${isFree ? 'plus' : 'cart-shopping'}"></i>
           ${isFree ? 'Gunakan Template' : 'Beli & Gunakan'}
         </button>
-        <a href="templates/${id}/index.html" class="btn btn-secondary" target="_blank">
+        <a href="templates/${id}/template.html" class="btn btn-secondary" target="_blank">
           <i class="fa-solid fa-eye"></i> Preview
         </a>
       </div>

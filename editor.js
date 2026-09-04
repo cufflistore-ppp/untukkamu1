@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!project.isFree) qs.set('hideBranding', '1');
     
     const templateId = project.templateId || 'untuk-kamu';
-    document.getElementById('previewFrame').src = `templates/${templateId}/index.html?${qs.toString()}`;
+    document.getElementById('previewFrame').src = `templates/${templateId}/template.html?${qs.toString()}`;
   }
   
   ['editTitle', 'editName', 'editMessage'].forEach(id => {
