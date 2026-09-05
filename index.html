@@ -21,6 +21,20 @@
   <!-- Page Loader -->
   <div id="page-loader">
     <div class="loader-spinner"></div>
+  <script>
+  (function(){
+    try {
+      var t = localStorage.getItem('uk_theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch(e) {}
+    function h(){ var l=document.getElementById('page-loader'); if(l) l.classList.add('hidden'); }
+    if (document.readyState === 'complete' || document.readyState === 'interactive') setTimeout(h, 0);
+    document.addEventListener('DOMContentLoaded', h);
+    window.addEventListener('load', h);
+    setTimeout(h, 1500);
+  })();
+  </script>
+
     <div class="loader-text">𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</div>
   </div>
 

@@ -58,7 +58,7 @@ function showLoader() {
 function hideLoader() {
   const loader = document.getElementById('page-loader');
   if (loader) {
-    setTimeout(() => loader.classList.add('hidden'), 300);
+    loader.classList.add('hidden');
   }
 }
 
@@ -120,8 +120,9 @@ function generateProjectCode(length = 7) {
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   hideLoader();
-  // Fallback: force hide loader after 2s
-  setTimeout(hideLoader, 2000);
+  // Fallback sesuai jaringan: max 1.2 detik
+  setTimeout(hideLoader, 1200);
+  window.addEventListener('load', hideLoader);
   
   // Theme toggle buttons
   document.querySelectorAll('.theme-toggle').forEach(btn => {
