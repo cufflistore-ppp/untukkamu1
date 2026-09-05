@@ -66,7 +66,128 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('photoPreview').src = data.photo;
     document.getElementById('photoPreviewBox').classList.remove('hidden');
   }
+
+  // Musik status UI
+  const track = typeof getMusicForTemplate === 'function'
+    ? getMusicForTemplate(project.templateId || 'untuk-kamu')
+    : null;
+  const musicStatus = document.getElementById('musicStatus');
+  const unlockMusicBtn = document.getElementById('unlockMusicBtn');
+  const musicTrackInfo = document.getElementById('musicTrackInfo');
+
+  function refreshMusicUI() {
+    if (!musicStatus || !unlockMusicBtn) return;
+    if (project.musicEnabled) {
+      musicStatus.innerHTML = '<i class="fa-solid fa-circle-check" style="color:#34d399;"></i> Musik aktif. Saat link dibuka, lagu bisa langsung bunyi.';
+      unlockMusicBtn.classList.add('hidden');
+      if (musicTrackInfo && track) {
+        musicTrackInfo.classList.remove('hidden');
+        musicTrackInfo.textContent = 'Lagu: ' + track.title;
+      }
+    } else {
+      musicStatus.innerHTML = 'Musik belum aktif. Bayar <strong>Rp500</strong> agar lagu otomatis tersedia di link yang dibagikan.';
+      unlockMusicBtn.classList.remove('hidden');
+      if (musicTrackInfo) musicTrackInfo.classList.add('hidden');
+    }
+  }
+  refreshMusicUI();
+
+  if (unlockMusicBtn) {
+    unlockMusicBtn.addEventListener('click', async () => {
+      if (!project.id) {
+        showToast('Simpan project dulu di mode online, lalu unlock musik', 'warning');
+        return;
+      }
+      if (!confirm('Aktifkan musik untuk project ini seharga Rp500?')) return;
+      unlockMusicBtn.disabled = true;
+      unlockMusicBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+      const res = await unlockProjectMusic(project.id, user.uid);
+      if (res.success) {
+        project.musicEnabled = true;
+        showToast(res.already ? 'Musik sudah aktif' : 'Musik berhasil diaktifkan!', 'success');
+        refreshMusicUI();
+      } else {
+        showToast(res.error || 'Gagal unlock musik', 'error');
+        if ((res.error || '').includes('Saldo')) {
+          setTimeout(() => navigateTo('topup.html'), 1200);
+        }
+      }
+      unlockMusicBtn.disabled = false;
+      unlockMusicBtn.innerHTML = '<i class="fa-solid fa-unlock"></i> Aktifkan Musik — Rp500';
+    });
+  }
   
+
+  // ===== Kode Akses (PIN) =====
+  const pinInput = document.getElementById('accessPinInput');
+  const savePinBtn = document.getElementById('savePinBtn');
+  const clearPinBtn = document.getElementById('clearPinBtn');
+  const currentPinValue = document.getElementById('currentPinValue');
+
+  function refreshPinUI() {
+    if (!currentPinValue) return;
+    const code = project.accessCode || '';
+    if (code) {
+      currentPinValue.textContent = code;
+      currentPinValue.style.letterSpacing = '0.15em';
+    } else {
+      currentPinValue.textContent = 'Belum diset (terbuka)';
+      currentPinValue.style.letterSpacing = 'normal';
+    }
+    if (pinInput && code) pinInput.value = code;
+  }
+  refreshPinUI();
+
+  async function saveAccessCode(newCode) {
+    if (!project.id || !db) {
+      showToast('Mode online diperlukan untuk menyimpan kode', 'warning');
+      return false;
+    }
+    try {
+      await db.collection('projects').doc(project.id).update({
+        accessCode: newCode,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      project.accessCode = newCode;
+      refreshPinUI();
+      return true;
+    } catch (e) {
+      showToast(e.message || 'Gagal menyimpan kode', 'error');
+      return false;
+    }
+  }
+
+  if (savePinBtn) {
+    savePinBtn.addEventListener('click', async () => {
+      const raw = (pinInput.value || '').trim();
+      if (!/^\d{4,12}$/.test(raw)) {
+        showToast('Kode harus 4–12 digit angka', 'error');
+        return;
+      }
+      savePinBtn.disabled = true;
+      const ok = await saveAccessCode(raw);
+      if (ok) showToast('Kode akses disimpan', 'success');
+      savePinBtn.disabled = false;
+    });
+  }
+
+  if (clearPinBtn) {
+    clearPinBtn.addEventListener('click', async () => {
+      if (!project.accessCode) {
+        showToast('Belum ada kode yang diset', 'info');
+        return;
+      }
+      if (!confirm('Hapus kode akses? Link akan terbuka tanpa kode.')) return;
+      clearPinBtn.disabled = true;
+      const ok = await saveAccessCode('');
+      if (ok) {
+        if (pinInput) pinInput.value = '';
+        showToast('Kode dihapus. Project terbuka untuk semua.', 'success');
+      }
+      clearPinBtn.disabled = false;
+    });
+  }
+
   // Live preview
   function updatePreview() {
     const title = document.getElementById('editTitle').value;
@@ -79,6 +200,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (message) qs.set('message', message);
     if (photoDataUrl) qs.set('photo', photoDataUrl);
     if (!project.isFree) qs.set('hideBranding', '1');
+    if (project.musicEnabled && track) {
+      qs.set('music', '1');
+      qs.set('musicUrl', track.url);
+    }
     
     const templateId = project.templateId || 'untuk-kamu';
     document.getElementById('previewFrame').src = `${templateId}.html?${qs.toString()}`;

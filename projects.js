@@ -44,7 +44,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             <h3 class="template-name">${p.name || 'Tanpa Nama'}</h3>
             <p class="template-desc">
               Template: ${p.templateName || '-'}<br>
-              Kode: <span class="project-code">${p.code}</span><br>
+              Kode link: <span class="project-code">${p.code}</span><br>
+              PIN akses: <strong>${p.accessCode ? p.accessCode : 'Tidak ada (terbuka)'}</strong><br>
               Edit: ${editsUsed}/${maxEdits === 999 ? '∞' : maxEdits} · ${created}
             </p>
             <div class="template-actions" style="flex-wrap: wrap;">

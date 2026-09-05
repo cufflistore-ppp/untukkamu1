@@ -19,7 +19,7 @@
   
   <!-- Top Bar -->
   <div class="top-bar">
-    <a href="index.html" class="top-bar-brand" data-nav>𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</a>
+    <div class="top-bar-left"><img src="logo.jpg" alt="Logo" class="top-bar-logo"><a href="index.html" class="top-bar-brand" data-nav>𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</a></div>
     <button class="theme-toggle" aria-label="Ganti tema"><i class="fa-solid fa-moon"></i></button>
   </div>
 
@@ -104,14 +104,60 @@
           </div>
         </div>
         
-        <!-- Templates -->
+        <!-- Templates / Produk -->
         <div id="tab-templates" class="hidden">
           <div class="flex items-center justify-between mb-2">
-            <h2>Kelola Template</h2>
-            <button class="btn btn-primary btn-sm" id="addTemplateBtn"><i class="fa-solid fa-plus"></i> Tambah</button>
+            <h2>Kelola Produk / Template</h2>
+            <button class="btn btn-secondary btn-sm" id="seedProductsBtn"><i class="fa-solid fa-database"></i> Seed Default</button>
           </div>
-          <div class="grid grid-3" id="adminTemplates">
-            <p style="color: var(--text-muted);">Gunakan sample templates atau tambah via Firestore.</p>
+
+          <div class="card mb-2" style="padding:1.25rem;">
+            <h3 class="mb-1" style="font-size:1rem;">Tambah Produk Baru</h3>
+            <form id="addProductForm">
+              <div class="grid grid-2" style="gap:0.75rem;">
+                <div class="form-group">
+                  <label class="form-label">Nama Produk</label>
+                  <input type="text" id="productName" class="form-input" placeholder="Contoh: Nembak Lucu" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Harga (0 = gratis)</label>
+                  <input type="number" id="productPrice" class="form-input" placeholder="0" min="0" value="0">
+                </div>
+                <div class="form-group" style="grid-column:1/-1;">
+                  <label class="form-label">Deskripsi</label>
+                  <textarea id="productDesc" class="form-input" rows="2" placeholder="Deskripsi singkat template"></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">URL Thumbnail</label>
+                  <input type="url" id="productThumb" class="form-input" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Kategori</label>
+                  <select id="productCategory" class="form-input">
+                    <option value="personal">Personal</option>
+                    <option value="romance">Romance</option>
+                    <option value="celebration">Celebration</option>
+                    <option value="invitation">Invitation</option>
+                    <option value="letter">Letter</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Fitur (pisah koma)</label>
+                  <input type="text" id="productFeatures" class="form-input" placeholder="Foto, Pesan, Animasi">
+                </div>
+                <div class="form-group" style="display:flex;align-items:center;gap:0.5rem;padding-top:1.5rem;">
+                  <input type="checkbox" id="productFeatured" checked>
+                  <label for="productFeatured">Tampil di Beranda</label>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary mt-1" id="saveProductBtn">
+                <i class="fa-solid fa-plus"></i> Simpan Produk
+              </button>
+            </form>
+          </div>
+
+          <div class="grid grid-2" id="adminTemplates">
+            <p style="color: var(--text-muted); grid-column:1/-1;">Memuat produk...</p>
           </div>
         </div>
         
@@ -165,6 +211,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js"></script>
   <script src="auth.js"></script>
+  <script src="products.js"></script>
   <script src="admin.js"></script>
 </body>
 </html>

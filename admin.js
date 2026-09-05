@@ -233,3 +233,111 @@ async function loadProjects() {
     tbody.innerHTML = '<tr><td colspan="5">Error: ' + e.message + '</td></tr>';
   }
 }
+
+/* ========== Produk / Template (products.js) ========== */
+
+async function loadAdminProducts() {
+  const el = document.getElementById('adminTemplates');
+  if (!el) return;
+
+  const list = await getProducts();
+  if (!list.length) {
+    el.innerHTML = '<p style="color:var(--text-muted);grid-column:1/-1;">Belum ada produk. Isi form di atas atau klik Seed Default.</p>';
+    return;
+  }
+
+  el.innerHTML = list.map(p => `
+    <article class="card template-card">
+      <div class="template-thumb">
+        <span class="template-badge ${p.isFree || p.price === 0 ? 'badge-free' : 'badge-paid'}">
+          ${p.isFree || p.price === 0 ? 'Gratis' : 'Berbayar'}
+        </span>
+        <img src="${p.thumbnail || 'logo.jpg'}" alt="${p.name}">
+      </div>
+      <div class="template-body">
+        <h3 class="template-name">${p.name}</h3>
+        <p class="template-desc">${p.description || ''}</p>
+        <div class="template-meta">
+          <span class="template-price">${p.isFree || p.price === 0 ? 'Gratis' : formatRupiah(p.price)}</span>
+          ${p.featured ? '<span style="font-size:0.75rem;color:var(--pink);">Beranda</span>' : ''}
+        </div>
+        <button class="btn btn-secondary btn-sm w-full deactivate-product" data-id="${p.id}">
+          <i class="fa-solid fa-eye-slash"></i> Nonaktifkan
+        </button>
+      </div>
+    </article>
+  `).join('');
+
+  el.querySelectorAll('.deactivate-product').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if (!confirm('Nonaktifkan produk ini?')) return;
+      const res = await deactivateProduct(btn.dataset.id);
+      if (res.success) {
+        showToast('Produk dinonaktifkan', 'success');
+        loadAdminProducts();
+      } else {
+        showToast(res.error || 'Gagal', 'error');
+      }
+    });
+  });
+}
+
+function initProductAdmin() {
+  const form = document.getElementById('addProductForm');
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('saveProductBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+
+      const res = await addProduct({
+        name: document.getElementById('productName').value,
+        description: document.getElementById('productDesc').value,
+        price: document.getElementById('productPrice').value,
+        thumbnail: document.getElementById('productThumb').value,
+        category: document.getElementById('productCategory').value,
+        features: document.getElementById('productFeatures').value,
+        featured: document.getElementById('productFeatured').checked
+      });
+
+      if (res.success) {
+        showToast('Produk ditambahkan: ' + res.id, 'success');
+        form.reset();
+        loadAdminProducts();
+      } else {
+        showToast(res.error || 'Gagal menyimpan', 'error');
+      }
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-plus"></i> Simpan Produk';
+    });
+  }
+
+  const seedBtn = document.getElementById('seedProductsBtn');
+  if (seedBtn) {
+    seedBtn.addEventListener('click', async () => {
+      if (!confirm('Seed 5 produk default ke Firestore?')) return;
+      seedBtn.disabled = true;
+      const res = await seedDefaultProducts();
+      if (res.success) {
+        showToast('Berhasil seed ' + res.count + ' produk', 'success');
+        loadAdminProducts();
+      } else {
+        showToast(res.error || 'Gagal seed', 'error');
+      }
+      seedBtn.disabled = false;
+    });
+  }
+
+  // Load when templates tab opened
+  document.querySelectorAll('.admin-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      if (tab.dataset.tab === 'templates') loadAdminProducts();
+    });
+  });
+}
+
+// Hook into existing admin init if possible
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(initProductAdmin, 500);
+});

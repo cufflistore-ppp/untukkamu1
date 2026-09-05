@@ -19,7 +19,7 @@
   
   <!-- Top Bar -->
   <div class="top-bar">
-    <a href="index.html" class="top-bar-brand" data-nav>𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</a>
+    <div class="top-bar-left"><img src="logo.jpg" alt="Logo" class="top-bar-logo"><a href="index.html" class="top-bar-brand" data-nav>𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</a></div>
     <button class="theme-toggle" aria-label="Ganti tema"><i class="fa-solid fa-moon"></i></button>
   </div>
 
@@ -80,6 +80,41 @@
             </div>
           </div>
           
+          <!-- Musik -->
+          <div class="form-group" id="musicSection" style="margin-top:1rem;padding:1rem;border-radius:12px;background:var(--gradient-soft);border:1px solid var(--border-color);">
+            <label class="form-label"><i class="fa-solid fa-music"></i> Musik Latar</label>
+            <p id="musicStatus" style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:0.6rem;">
+              Proyek gratis belum punya musik. Unlock agar lagu otomatis bunyi saat link dibuka.
+            </p>
+            <button type="button" class="btn btn-primary btn-sm" id="unlockMusicBtn">
+              <i class="fa-solid fa-unlock"></i> Aktifkan Musik — Rp500
+            </button>
+            <p id="musicTrackInfo" class="hidden" style="font-size:0.8rem;color:var(--text-muted);margin-top:0.5rem;"></p>
+          </div>
+
+
+          <!-- Kode Akses -->
+          <div class="form-group" id="pinSection" style="margin-top:1rem;padding:1rem;border-radius:12px;background:var(--bg-secondary);border:1px solid var(--border-color);">
+            <label class="form-label"><i class="fa-solid fa-key"></i> Kode Akses Project</label>
+            <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:0.6rem;">
+              Opsional. Kalau diisi, orang yang buka link harus masukkan kode ini dulu.
+              Kosongkan = link langsung terbuka tanpa kode.
+            </p>
+            <p id="currentPinInfo" style="font-size:0.9rem;margin-bottom:0.6rem;">
+              Kode saat ini: <strong id="currentPinValue">Belum diset (terbuka)</strong>
+            </p>
+            <div class="flex gap-1" style="flex-wrap:wrap;">
+              <input type="text" id="accessPinInput" class="form-input" inputmode="numeric" pattern="[0-9]*" maxlength="12" placeholder="Min. 4 digit angka" style="flex:1;min-width:140px;">
+              <button type="button" class="btn btn-primary btn-sm" id="savePinBtn">
+                <i class="fa-solid fa-floppy-disk"></i> Simpan Kode
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" id="clearPinBtn">
+                <i class="fa-solid fa-unlock"></i> Hapus Kode
+              </button>
+            </div>
+            <p id="pinHint" style="font-size:0.75rem;color:var(--text-muted);margin-top:0.45rem;">Minimal 4 angka. Bisa diganti kapan saja.</p>
+          </div>
+
           <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem;">
             <i class="fa-solid fa-circle-info"></i> Perubahan langsung terlihat di preview.
           </p>
@@ -99,6 +134,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
   <script src="firebase-config.js"></script>
   <script src="auth.js"></script>
+  <script src="music.js"></script>
   <script src="editor.js"></script>
 </body>
 </html>

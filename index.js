@@ -2,6 +2,11 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   initHeroSlider();
+
+  // Produk rekomendasi di beranda (dari products.js)
+  if (typeof renderProductsTo === 'function') {
+    renderProductsTo('recommendedTemplates', { featuredOnly: true, limit: 6 });
+  }
 });
 
 function initHeroSlider() {
@@ -10,24 +15,21 @@ function initHeroSlider() {
   if (!slides.length) return;
   
   let current = 0;
-  const total = slides.length;
   
   function goTo(index) {
     slides[current].classList.remove('active');
-    dots[current].classList.remove('active');
+    if (dots[current]) dots[current].classList.remove('active');
     current = index;
     slides[current].classList.add('active');
-    dots[current].classList.add('active');
+    if (dots[current]) dots[current].classList.add('active');
   }
   
   function next() {
-    goTo((current + 1) % total);
+    goTo((current + 1) % slides.length);
   }
   
-  // Auto slide
   let timer = setInterval(next, 4500);
   
-  // Dot click
   dots.forEach(dot => {
     dot.addEventListener('click', () => {
       clearInterval(timer);

@@ -1,9 +1,23 @@
 document.addEventListener('DOMContentLoaded', async () => {
-  // Redirect if already logged in
-  const user = await getCurrentUser();
-  if (user) {
-    navigateTo('profile.html');
-    return;
+  // Always hide loader
+  if (typeof hideLoader === 'function') hideLoader();
+  setTimeout(() => {
+    const l = document.getElementById('page-loader');
+    if (l) l.classList.add('hidden');
+  }, 500);
+
+  // Redirect if already logged in (with timeout)
+  try {
+    const user = await Promise.race([
+      getCurrentUser(),
+      new Promise(r => setTimeout(() => r(null), 3000))
+    ]);
+    if (user) {
+      navigateTo('profile.html');
+      return;
+    }
+  } catch (e) {
+    console.warn('Auth check failed:', e);
   }
   
   const form = document.getElementById('loginForm');
@@ -11,6 +25,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const loginBtn = document.getElementById('loginBtn');
   const googleBtn = document.getElementById('googleLoginBtn');
   
+  if (!form) return;
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     errorEl.classList.remove('show');
@@ -20,32 +36,41 @@ document.addEventListener('DOMContentLoaded', async () => {
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     
-    const result = await loginWithEmail(email, password);
-    
-    if (result.success) {
-      showToast('Berhasil masuk!', 'success');
-      navigateTo('profile.html');
-    } else {
-      errorEl.textContent = result.error;
+    try {
+      const result = await loginWithEmail(email, password);
+      if (result.success) {
+        showToast('Berhasil masuk!', 'success');
+        navigateTo('profile.html');
+      } else {
+        errorEl.textContent = result.error || 'Gagal masuk';
+        errorEl.classList.add('show');
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk';
+      }
+    } catch (err) {
+      errorEl.textContent = 'Terjadi kesalahan. Coba lagi.';
       errorEl.classList.add('show');
       loginBtn.disabled = false;
       loginBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk';
     }
   });
   
-  googleBtn.addEventListener('click', async () => {
-    googleBtn.disabled = true;
-    googleBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
-    
-    const result = await loginWithGoogle();
-    
-    if (result.success) {
-      showToast('Berhasil masuk dengan Google!', 'success');
-      navigateTo('profile.html');
-    } else {
-      showToast(result.error, 'error');
-      googleBtn.disabled = false;
-      googleBtn.innerHTML = '<i class="fa-brands fa-google"></i> Masuk dengan Google';
-    }
-  });
+  if (googleBtn) {
+    googleBtn.addEventListener('click', async () => {
+      googleBtn.disabled = true;
+      try {
+        const result = await loginWithGoogle();
+        if (result.success) {
+          showToast('Berhasil masuk!', 'success');
+          navigateTo('profile.html');
+        } else {
+          showToast(result.error || 'Gagal masuk dengan Google', 'error');
+          googleBtn.disabled = false;
+        }
+      } catch (e) {
+        showToast('Gagal masuk dengan Google', 'error');
+        googleBtn.disabled = false;
+      }
+    });
+  }
 });

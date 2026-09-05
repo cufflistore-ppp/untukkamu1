@@ -142,6 +142,8 @@ async function createProject(user, template) {
       maxEdits: 999,
       editsUsed: 0,
       data: {},
+      musicEnabled: false,
+      accessCode: '',
       thumbnail: template.thumbnail,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -205,6 +207,8 @@ async function purchaseTemplate(user, template) {
         maxEdits: 2,
         editsUsed: 0,
         data: {},
+        musicEnabled: false,
+      accessCode: '',
         thumbnail: template.thumbnail,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()

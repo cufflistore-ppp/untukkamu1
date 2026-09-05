@@ -40,12 +40,27 @@
     <a href="index.html" class="btn btn-primary"><i class="fa-solid fa-house"></i> Kembali ke Beranda</a>
   </div>
   
+
+  <div id="pinGate" class="not-found hidden">
+    <i class="fa-solid fa-lock" style="font-size: 2.5rem; margin-bottom: 1rem; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+    <h1 style="font-size:1.4rem;margin-bottom:0.4rem;">Masukkan Kode Akses</h1>
+    <p style="color: var(--text-secondary); margin: 0 0 1.2rem; font-size:0.9rem;">Project ini dilindungi kode. Minta kodenya ke pengirim link.</p>
+    <div style="width:100%;max-width:280px;">
+      <input type="text" id="pinGateInput" class="form-input" inputmode="numeric" pattern="[0-9]*" maxlength="12" placeholder="Kode (min. 4 digit)" style="text-align:center;font-size:1.2rem;letter-spacing:0.2em;margin-bottom:0.75rem;">
+      <p id="pinGateError" style="color:#f87171;font-size:0.85rem;min-height:1.2em;margin-bottom:0.5rem;"></p>
+      <button type="button" class="btn btn-primary w-full" id="pinGateSubmit">
+        <i class="fa-solid fa-right-to-bracket"></i> Buka Project
+      </button>
+    </div>
+  </div>
+
   <iframe id="projectFrame" class="hidden"></iframe>
 
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js"></script>
+  <script src="music.js"></script>
   <script src="public-project.js"></script>
 </body>
 </html>

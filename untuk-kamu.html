@@ -100,5 +100,16 @@
     if (params.get('photo')) document.getElementById('photo').src = params.get('photo');
     if (params.get('hideBranding') === '1') document.getElementById('branding').style.display = 'none';
   </script>
+<script src="music.js"></script>
+<script>
+(function(){
+  var p = new URLSearchParams(location.search);
+  if (p.get("music") === "1" && p.get("musicUrl")) {
+    if (typeof mountMusicPlayer === "function") {
+      mountMusicPlayer({ url: p.get("musicUrl"), autoplay: true });
+    }
+  }
+})();
+</script>
 </body>
 </html>
