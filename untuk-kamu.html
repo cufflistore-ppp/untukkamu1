@@ -61,6 +61,7 @@
       line-height: 1.7;
       color: #475569;
       margin-bottom: 1.5rem;
+      white-space: pre-wrap;
     }
     .branding {
       margin-top: 2rem;
@@ -92,24 +93,51 @@
   </div>
   
   <script>
-    // Load project data from parent or URL params (for editor preview / public)
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('title')) document.getElementById('title').textContent = params.get('title');
-    if (params.get('recipient')) document.getElementById('recipient').textContent = params.get('recipient');
-    if (params.get('message')) document.getElementById('message').textContent = params.get('message');
-    if (params.get('photo')) document.getElementById('photo').src = params.get('photo');
-    if (params.get('hideBranding') === '1') document.getElementById('branding').style.display = 'none';
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      
+      if (params.get('title')) document.getElementById('title').textContent = params.get('title');
+      if (params.get('recipient') || params.get('name')) {
+        document.getElementById('recipient').textContent = params.get('recipient') || params.get('name');
+      }
+      if (params.get('message')) document.getElementById('message').textContent = params.get('message');
+      
+      // Foto: prioritaskan photoKey (dari sessionStorage) lalu photo langsung
+      const photoKey = params.get('photoKey');
+      if (photoKey) {
+        try {
+          const photoData = sessionStorage.getItem(photoKey);
+          if (photoData) document.getElementById('photo').src = photoData;
+        } catch(e) {}
+      } else if (params.get('photo')) {
+        document.getElementById('photo').src = params.get('photo');
+      }
+      
+      if (params.get('hideBranding') === '1') {
+        document.getElementById('branding').style.display = 'none';
+      }
+      
+      // Warna tema opsional
+      const color = params.get('color');
+      if (color) {
+        const photo = document.getElementById('photo');
+        if (photo) {
+          photo.style.borderColor = color;
+          photo.style.boxShadow = '0 0 20px ' + color + '66';
+        }
+      }
+    })();
   </script>
-<script src="music.js"></script>
-<script>
-(function(){
-  var p = new URLSearchParams(location.search);
-  if (p.get("music") === "1" && p.get("musicUrl")) {
-    if (typeof mountMusicPlayer === "function") {
-      mountMusicPlayer({ url: p.get("musicUrl"), autoplay: true });
+  <script src="music.js"></script>
+  <script>
+  (function(){
+    var p = new URLSearchParams(location.search);
+    if (p.get("music") === "1" && p.get("musicUrl")) {
+      if (typeof mountMusicPlayer === "function") {
+        mountMusicPlayer({ url: p.get("musicUrl"), autoplay: true });
+      }
     }
-  }
-})();
-</script>
+  })();
+  </script>
 </body>
 </html>

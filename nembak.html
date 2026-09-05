@@ -134,10 +134,24 @@
   <script>
     const params = new URLSearchParams(window.location.search);
     if (params.get('title')) document.getElementById('title').textContent = params.get('title');
-    if (params.get('name')) document.getElementById('name').textContent = params.get('name');
+    if (params.get('name') || params.get('recipient')) {
+      const el = document.getElementById('name') || document.getElementById('recipient');
+      if (el) el.textContent = params.get('name') || params.get('recipient');
+    }
     if (params.get('message')) document.getElementById('message').textContent = params.get('message');
-    if (params.get('photo')) document.getElementById('photo').src = params.get('photo');
-    if (params.get('hideBranding') === '1') document.getElementById('branding').style.display = 'none';
+    const photoKey = params.get('photoKey');
+    if (photoKey) {
+      try {
+        const photoData = sessionStorage.getItem(photoKey);
+        if (photoData) document.getElementById('photo').src = photoData;
+      } catch(e) {}
+    } else if (params.get('photo')) {
+      document.getElementById('photo').src = params.get('photo');
+    }
+    if (params.get('hideBranding') === '1') {
+      const b = document.getElementById('branding');
+      if (b) b.style.display = 'none';
+    }
     
     const btnNo = document.getElementById('btnNo');
     const btnYes = document.getElementById('btnYes');

@@ -18,10 +18,20 @@ document.addEventListener('DOMContentLoaded', async () => {
   const avatar = document.getElementById('userAvatar');
   avatar.src = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email)}&background=c4b5fd&color=fff&size=180`;
   
-  // Admin button — tampilkan langsung jika email admin
-  const adminBtn = document.querySelector('.admin-only');
-  if (adminBtn && user.email === ADMIN_EMAIL) {
-    adminBtn.classList.remove('hidden');
+  // ===== ADMIN BUTTON — paksa tampil jika email cocok =====
+  const email = (user.email || '').trim().toLowerCase();
+  const adminEmail = (typeof ADMIN_EMAIL !== 'undefined' ? ADMIN_EMAIL : 'raffliraffli649@gmail.com').trim().toLowerCase();
+  
+  const adminBtn = document.querySelector('a.admin-only, .admin-only');
+  if (adminBtn) {
+    if (email === adminEmail) {
+      adminBtn.classList.remove('hidden');
+      adminBtn.style.setProperty('display', 'inline-flex', 'important');
+      console.log('[Admin] Tombol Admin ditampilkan untuk', user.email);
+    } else {
+      adminBtn.classList.add('hidden');
+      adminBtn.style.setProperty('display', 'none', 'important');
+    }
   }
   
   // Load profile data
@@ -39,7 +49,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Logout
   document.getElementById('logoutBtn').addEventListener('click', logout);
   
-  // Load recent projects (tanpa orderBy dulu biar tidak error index)
+  // Load recent projects
   if (db) {
     try {
       const snap = await db.collection('projects')
@@ -49,7 +59,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       const container = document.getElementById('recentProjects');
       if (!snap.empty) {
-        // Sort di client
         const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         docs.sort((a, b) => {
           const ta = a.createdAt?.seconds || 0;

@@ -198,7 +198,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (title) qs.set('title', title);
     if (name) qs.set(project.templateId === 'nembak' ? 'name' : 'recipient', name);
     if (message) qs.set('message', message);
-    if (photoDataUrl) qs.set('photo', photoDataUrl);
+    
+    // Foto via sessionStorage biar URL tidak terlalu panjang
+    if (photoDataUrl) {
+      try {
+        sessionStorage.setItem('uk_photo_preview', photoDataUrl);
+        qs.set('photoKey', 'uk_photo_preview');
+      } catch(e) {
+        // fallback kalau sessionStorage penuh
+        if (photoDataUrl.length < 2000) qs.set('photo', photoDataUrl);
+      }
+    }
+    
+    const activeSwatch = document.querySelector('.color-swatch.active');
+    if (activeSwatch && activeSwatch.dataset.color) {
+      qs.set('color', activeSwatch.dataset.color);
+    }
+    
     if (!project.isFree) qs.set('hideBranding', '1');
     if (project.musicEnabled && track) {
       qs.set('music', '1');
@@ -274,11 +290,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     btn.disabled = true;
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
     
+    const activeSwatch = document.querySelector('.color-swatch.active');
+    const themeColor = activeSwatch ? (activeSwatch.dataset.color || activeSwatch.style.backgroundColor || '') : '';
+    
     const newData = {
       title: document.getElementById('editTitle').value,
       name: document.getElementById('editName').value,
       message: document.getElementById('editMessage').value,
-      photo: photoDataUrl || null
+      photo: photoDataUrl || null,
+      themeColor: themeColor || null
     };
     
     if (!db || !project.id) {

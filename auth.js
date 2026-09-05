@@ -179,11 +179,18 @@ function initAuthUI() {
       const nameEls = document.querySelectorAll('.user-display-name');
       nameEls.forEach(el => el.textContent = user.displayName || user.email);
       
-      // Admin check — langsung tampilkan
-      if (user.email === ADMIN_EMAIL) {
-        adminLinks.forEach(el => el.classList.remove('hidden'));
+      // Admin check — case-insensitive
+      const emailNorm = (user.email || '').trim().toLowerCase();
+      const adminNorm = (ADMIN_EMAIL || '').trim().toLowerCase();
+      if (emailNorm === adminNorm) {
+        adminLinks.forEach(el => {
+          el.classList.remove('hidden');
+          el.style.setProperty('display', 'inline-flex', 'important');
+        });
       } else {
-        adminLinks.forEach(el => el.classList.add('hidden'));
+        adminLinks.forEach(el => {
+          el.classList.add('hidden');
+        });
       }
       
       // Balance

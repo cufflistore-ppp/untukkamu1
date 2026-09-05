@@ -25,14 +25,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   if (!project) {
-    const templateMap = {
-      'DEMO001': { templateId: 'untuk-kamu', isFree: true, musicEnabled: false, accessCode: '', data: {} },
-      'DEMO002': { templateId: 'nembak', isFree: false, musicEnabled: true, accessCode: '1234', data: {} }
-    };
-    project = templateMap[code];
-  }
-
-  if (!project) {
     hideLoader();
     notFound.classList.remove('hidden');
     return;
@@ -49,9 +41,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     const qs = new URLSearchParams();
 
     if (data.title) qs.set('title', data.title);
-    if (data.recipient || data.name) qs.set(data.recipient ? 'recipient' : 'name', data.recipient || data.name);
+    if (data.recipient || data.name) {
+      // nembak pakai 'name', template lain pakai 'recipient'
+      if (templateId === 'nembak') {
+        qs.set('name', data.name || data.recipient || '');
+      } else {
+        qs.set('recipient', data.recipient || data.name || '');
+      }
+    }
     if (data.message) qs.set('message', data.message);
-    if (data.photo) qs.set('photo', data.photo);
+
+    // Foto: jangan taruh base64 di URL (terlalu panjang).
+    // Simpan ke sessionStorage, template akan ambil dari situ.
+    if (data.photo) {
+      try {
+        sessionStorage.setItem('uk_photo_' + code, data.photo);
+        qs.set('photoKey', 'uk_photo_' + code);
+      } catch (e) {
+        // sessionStorage penuh / gagal → skip foto
+        console.warn('Gagal simpan foto ke sessionStorage', e);
+      }
+    }
+
+    // Warna tema (jika ada)
+    if (data.themeColor) qs.set('color', data.themeColor);
 
     if (!project.isFree && project.price > 0) {
       qs.set('hideBranding', '1');
@@ -73,6 +86,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }
 
+    // Kirim juga code agar template bisa fallback load dari Firestore
+    qs.set('code', code);
+
     frame.src = `${templateId}.html?${qs.toString()}`;
     frame.classList.remove('hidden');
     hideLoader();
@@ -85,7 +101,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
-  // Ada kode → tampilkan form
+  // Ada kode → tampilkan form PIN
   hideLoader();
   if (pinGate) pinGate.classList.remove('hidden');
 
