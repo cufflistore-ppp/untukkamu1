@@ -78,7 +78,19 @@
         
         <!-- Top Ups -->
         <div id="tab-topups">
-          <h2 class="mb-2">Permintaan Top Up</h2>
+          <h2 class="mb-2"><i class="fa-solid fa-wallet"></i> Permintaan Top Up</h2>
+          <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1rem;">
+            Saat user upload bukti TF, data muncul di sini otomatis (email + nominal). Cukup klik <strong>Konfirmasi</strong> → saldo langsung ditambah &amp; status jadi APPROVED. Tidak perlu ketik email lagi.
+          </p>
+
+          <!-- Kartu pending (paling penting) -->
+          <h3 class="mb-1" style="font-size:1rem;color:var(--pink);">Menunggu Konfirmasi</h3>
+          <div id="pendingTopupsCards" class="mb-3">
+            <p style="color:var(--text-muted);">Memuat...</p>
+          </div>
+
+          <!-- Riwayat semua top up -->
+          <h3 class="mb-1" style="font-size:1rem;">Riwayat Top Up</h3>
           <div class="table-wrapper">
             <table>
               <thead>
@@ -87,7 +99,7 @@
                   <th>Nominal</th>
                   <th>Status</th>
                   <th>Waktu</th>
-                  <th>Aksi</th>
+                  <th>Bukti / Aksi</th>
                 </tr>
               </thead>
               <tbody id="topupsTable">

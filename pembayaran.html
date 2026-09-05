@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pembayaran — 𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</title>
+  <title>Pembayaran — Untuk Kamu</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -26,12 +26,12 @@
     setTimeout(h, 1500);
   })();
   </script>
-    <div class="loader-text">𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</div>
+    <div class="loader-text">Untuk Kamu</div>
   </div>
 
   <!-- Top Bar -->
   <div class="top-bar">
-    <div class="top-bar-left"><img src="logo.jpg" alt="Logo" class="top-bar-logo"><a href="index.html" class="top-bar-brand" data-nav>𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</a></div>
+    <div class="top-bar-left"><img src="logo.jpg" alt="Logo" class="top-bar-logo"><a href="index.html" class="top-bar-brand" data-nav>Untuk Kamu</a></div>
     <button class="theme-toggle" aria-label="Ganti tema"><i class="fa-solid fa-moon"></i></button>
   </div>
 
@@ -70,34 +70,30 @@
         <p style="font-size: 0.8rem; color: var(--text-muted);">Transfer sesuai nominal di atas</p>
       </div>
       
+      <!-- Form Upload Bukti TF -->
       <div class="card" style="padding: 1.5rem;">
-        <button type="button" class="btn btn-primary w-full" id="waConfirmBtn">
-          <i class="fa-brands fa-whatsapp"></i> Kirim Bukti via WhatsApp
+        <div class="form-group">
+          <label class="form-label">Upload Bukti Transfer</label>
+          <div class="upload-area" id="buktiUploadArea" style="border: 2px dashed var(--border); border-radius: 12px; padding: 24px; text-align: center; cursor: pointer;">
+            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 1.8rem; color: var(--text-muted); margin-bottom: 8px; display: block;"></i>
+            <span style="color: var(--text-muted); font-size: 0.9rem;">Klik atau drag screenshot bukti TF</span>
+            <input type="file" id="buktiFile" accept="image/*" hidden>
+          </div>
+          <div id="buktiPreview" style="margin-top: 12px; display: none; text-align: center;">
+            <img id="buktiPreviewImg" style="max-height: 180px; border-radius: 12px; border: 1px solid var(--border);">
+          </div>
+        </div>
+        
+        <button type="button" class="btn btn-primary w-full" id="submitBuktiBtn" disabled>
+          <i class="fa-solid fa-paper-plane"></i> Kirim Bukti Transfer
         </button>
         
         <p class="text-center mt-2" style="font-size: 0.85rem; color: var(--text-muted);">
-          Setelah transfer, klik tombol di atas lalu kirim foto bukti TF di chat WhatsApp.
+          Setelah upload, admin akan memeriksa dan menambahkan saldo secara otomatis. Tidak perlu hubungi WhatsApp.
         </p>
-        
-        <a href="topup.html" class="btn btn-outline w-full mt-2" data-nav style="margin-top: 0.8rem;">
-          <i class="fa-solid fa-arrow-left"></i> Ubah Nominal
-        </a>
-      </div>
-      
-      <div class="card mt-2" style="padding: 1.2rem;">
-        <h3 class="mb-1"><i class="fa-solid fa-circle-info"></i> Catatan</h3>
-        <ul style="font-size: 0.9rem; color: var(--text-secondary); padding-left: 1.2rem;">
-          <li style="margin-bottom: 0.4rem;">Pastikan nominal transfer <strong>sama persis</strong></li>
-          <li style="margin-bottom: 0.4rem;">Kirim bukti transfer yang jelas</li>
-          <li>Admin biasanya memproses dalam 1–30 menit</li>
-        </ul>
       </div>
     </div>
   </main>
-
-  <footer class="footer">
-    <div class="footer-bottom">&copy; 2026 𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</div>
-  </footer>
 
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>

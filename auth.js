@@ -193,15 +193,27 @@ function initAuthUI() {
         });
       }
       
-      // Balance
+      // Balance real-time (update otomatis saat admin approve top up)
       try {
-        const profile = await getUserProfile(user.uid);
-        if (profile) {
-          const balEls = document.querySelectorAll('.user-balance');
-          balEls.forEach(el => el.textContent = formatRupiah(profile.balance || 0));
+        if (window._balanceUnsub) { window._balanceUnsub(); window._balanceUnsub = null; }
+        if (db) {
+          window._balanceUnsub = db.collection('users').doc(user.uid).onSnapshot(snap => {
+            const bal = snap.exists ? (snap.data().balance || 0) : 0;
+            document.querySelectorAll('.user-balance').forEach(el => {
+              el.textContent = formatRupiah(bal);
+            });
+          }, err => console.warn('balance listener', err));
+        } else {
+          const profile = await getUserProfile(user.uid);
+          if (profile) {
+            document.querySelectorAll('.user-balance').forEach(el => {
+              el.textContent = formatRupiah(profile.balance || 0);
+            });
+          }
         }
       } catch (e) {}
     } else {
+      if (window._balanceUnsub) { window._balanceUnsub(); window._balanceUnsub = null; }
       authButtons.forEach(el => el.classList.remove('hidden'));
       userButtons.forEach(el => el.classList.add('hidden'));
       adminLinks.forEach(el => el.classList.add('hidden'));

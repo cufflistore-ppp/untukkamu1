@@ -1,169 +1,68 @@
-# 𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾
+# Untuk Kamu — Platform Template Digital Personal
 
-Platform marketplace / template builder untuk membuat project digital personal yang dapat dibagikan melalui link.
+Marketplace template digital (nembak, ulang tahun, wisuda, dll) dengan sistem saldo internal, top up QRIS + upload bukti, panel admin, editor tema, dan link shareable.
 
-## Fitur Utama
+## Fitur Utama (sesuai spesifikasi)
 
-- Login / Register / Google Login (Firebase Auth)
+- Login Google (Firebase Auth)
 - Katalog template gratis & berbayar
-- Editor project (teks, foto, warna)
-- Sistem saldo internal + Top Up QRIS
-- Admin panel (hanya `raffliraffli649@gmail.com`)
-- Project publik via kode unik (`p.html?code=XXXX`)
+- Editor project (teks, foto, warna) + live preview
+- Sistem saldo real-time + Top Up QRIS + upload bukti TF (tanpa WhatsApp)
+- Panel Admin **hanya** untuk `raffliraffli649@gmail.com`
+  - Isi saldo user
+  - Lihat bukti TF (gambar)
+  - Galeri foto project
+  - Riwayat top up
+- PIN protection untuk link project
 - Dark / Light mode
-- Fully responsive
-- Loading animation antar halaman
-- Font Awesome icons (tanpa emoji)
+- Fully responsive (mobile-first)
+- Upload gambar via **ImgBB** (tidak pakai Firebase Storage — sesuai Spark plan)
+- Open Graph meta untuk share link
 
-## Struktur File
+## Konfigurasi Penting
 
-```
-├── index.html          # Beranda
-├── login.html
-├── register.html
-├── template.html       # Katalog template
-├── detail.html         # Detail template
-├── editor.html         # Editor project
-├── proyek.html         # Proyek Saya
-├── p.html              # Public project viewer
-├── profile.html        # Akun Saya
-├── topup.html          # Top Up saldo
-├── about.html
-├── admin.html          # Admin Panel
-├── css/style.css       # Satu file CSS untuk seluruh website
-├── js/
-│   ├── firebase-config.js
-│   ├── auth.js
-│   ├── index.js
-│   ├── login.js
-│   ├── register.js
-│   ├── templates.js
-│   ├── detail.js
-│   ├── projects.js
-│   ├── editor.js
-│   ├── public-project.js
-│   ├── profile.js
-│   ├── topup.js
-│   └── admin.js
-└── templates/
-    ├── untuk-kamu/index.html
-    ├── nembak/index.html
-    ├── ulang-tahun/   (tambahkan sendiri)
-    └── undangan/      (tambahkan sendiri)
-```
-
-## Setup Firebase
-
-1. Buat project di [Firebase Console](https://console.firebase.google.com)
-2. Aktifkan **Authentication** → Email/Password + Google
-3. Buat **Firestore Database**
-4. Aktifkan **Storage**
-5. Salin konfigurasi web ke `js/firebase-config.js`
-
+### ImgBB API Key
+Di `firebase-config.js`:
 ```js
-const firebaseConfig = {
-  apiKey: "...",
-  authDomain: "...",
-  projectId: "...",
-  storageBucket: "...",
-  messagingSenderId: "...",
-  appId: "..."
-};
+const IMGBB_API_KEY = "8b13b584cdf42031718bc034eefcef14";
 ```
+Ganti jika perlu.
 
-6. **Firestore Indexes** yang dibutuhkan:
-   - Collection `projects`: `ownerId` ASC + `createdAt` DESC
-   - Collection `projects`: `code` ASC
-   - Collection `topups`: `createdAt` DESC
+### Firebase
+Sudah terisi project `untukkamu-751db`. Pastikan:
+1. Authentication → Google enabled
+2. Firestore aktif
+3. Security Rules sesuai `firestore.rules` (admin email hard-coded)
 
-7. **Firestore Security Rules** (contoh dasar — sesuaikan):
+### Logo & QRIS
+- `logo.jpg` — logo resmi Untuk Kamu
+- `qris.jpg` — QRIS admin untuk top up
 
-```
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    function isAdmin() {
-      return request.auth != null && request.auth.token.email == 'raffliraffli649@gmail.com';
-    }
-    
-    match /users/{userId} {
-      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
-      allow create: if request.auth != null && request.auth.uid == userId;
-      allow update: if isAdmin(); // saldo hanya diubah lewat backend/admin
-    }
-    
-    match /projects/{projectId} {
-      allow read: if true; // public by code
-      allow create: if request.auth != null;
-      allow update, delete: if request.auth != null && resource.data.ownerId == request.auth.uid;
-    }
-    
-    match /templates/{id} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    
-    match /topups/{id} {
-      allow create: if request.auth != null;
-      allow read: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
-      allow update: if isAdmin();
-    }
-    
-    match /purchases/{id} {
-      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
-      allow write: if false; // hanya via Cloud Function
-    }
-    
-    match /balance_history/{id} {
-      allow read: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
-      allow write: if false;
-    }
-  }
-}
-```
+## Struktur
 
-## Cloud Functions (Disarankan untuk Produksi)
-
-Proses berikut **wajib** dipindah ke Cloud Functions agar aman:
-
-- Pembelian template (cek harga asli + potong saldo + buat project) — gunakan Transaction
-- Approval top up + penambahan saldo
-- Admin tambah/kurangi saldo
-- Validasi batas edit project berbayar
-- Generate kode project unik
-
-Jangan percaya harga/nominal yang dikirim dari frontend.
-
-## QRIS
-
-Ganti gambar QRIS di `topup.html` dengan QRIS milik admin:
-
-```html
-<img src="path/ke/qris-anda.png" alt="QRIS" class="qris-img">
-```
+Multi-page HTML + JS:
+- `index.html` — Beranda
+- `template.html` — Katalog
+- `editor.html` — Editor project
+- `p.html` — Public viewer (dengan PIN)
+- `proyek.html` — Proyek Saya
+- `topup.html` + `pembayaran.html` — Top up flow (QRIS + upload bukti)
+- `admin.html` — Panel Admin
+- `profile.html`, `about.html`, dll.
 
 ## Deploy
 
-Frontend bisa di-host di:
-- Vercel
-- Netlify
-- Firebase Hosting
-- GitHub Pages
+Bisa di-host di Vercel / Netlify / Firebase Hosting / GitHub Pages.
 
 ```bash
-# Contoh Vercel
+# Contoh
 vercel --prod
 ```
 
-## Catatan Penting
+## Catatan Keamanan
 
-- Admin hanya untuk email: `raffliraffli649@gmail.com`
-- Validasi admin dilakukan di client **dan** harus diulang di server (Security Rules / Cloud Functions)
-- Project gratis: edit unlimited + branding kecil di bawah
-- Project berbayar: max 2 edit + tanpa branding
-- Top up min Rp2.000 — max Rp1.000.000
-- Semua warna identitas: Biru muda + Pink + Ungu dengan gradient & glow
+- Validasi admin & potongan saldo **wajib** di Firestore Rules / Cloud Functions (jangan hanya frontend).
+- Spark plan: tidak ada Cloud Functions gratis unlimited — gunakan Rules ketat.
+- Foto disimpan sebagai URL ImgBB di Firestore, bukan binary.
 
-## Mode Demo
-
-Tanpa konfigurasi Firebase, website tetap bisa dibuka dan dinavigasi. Fitur auth, saldo, dan penyimpanan project memerlukan Firebase yang sudah dikonfigurasi.
+© 2026 Untuk Kamu

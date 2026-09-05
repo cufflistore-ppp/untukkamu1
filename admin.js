@@ -76,42 +76,108 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function loadTopups() {
   const tbody = document.getElementById('topupsTable');
+  const cardsEl = document.getElementById('pendingTopupsCards');
   if (!db) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Firebase belum dikonfigurasi</td></tr>';
+    if (tbody) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Firebase belum dikonfigurasi</td></tr>';
+    if (cardsEl) cardsEl.innerHTML = '<p style="color:var(--text-muted);">Firebase belum dikonfigurasi</p>';
     return;
   }
   
   try {
     const snap = await db.collection('topups').orderBy('createdAt', 'desc').limit(50).get();
     if (snap.empty) {
-      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color: var(--text-muted);">Belum ada permintaan</td></tr>';
+      if (tbody) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color: var(--text-muted);">Belum ada permintaan</td></tr>';
+      if (cardsEl) cardsEl.innerHTML = '<p style="color:var(--text-muted);">Belum ada yang menunggu konfirmasi</p>';
       return;
     }
     
-    tbody.innerHTML = snap.docs.map(doc => {
-      const t = doc.data();
-      const time = t.createdAt ? new Date(t.createdAt.seconds * 1000).toLocaleString('id-ID') : '-';
-      const statusClass = t.status === 'PENDING' ? 'status-pending' : t.status === 'APPROVED' ? 'status-approved' : 'status-rejected';
-      
-      return '<tr>' +
-        '<td>' + (t.email || '-') + '</td>' +
-        '<td>' + formatRupiah(t.nominal) + '</td>' +
-        '<td><span class="status-badge ' + statusClass + '">' + t.status + '</span></td>' +
-        '<td>' + time + '</td>' +
-        '<td>' +
-          (t.status === 'PENDING' ?
-            '<button class="btn btn-primary btn-sm approve-btn" data-id="' + doc.id + '" data-uid="' + t.userId + '" data-nominal="' + t.nominal + '"><i class="fa-solid fa-check"></i></button> ' +
-            '<button class="btn btn-danger btn-sm reject-btn" data-id="' + doc.id + '"><i class="fa-solid fa-xmark"></i></button> ' +
-            (t.proofURL ? '<a href="' + t.proofURL + '" target="_blank" class="btn btn-secondary btn-sm"><i class="fa-solid fa-image"></i></a>' : '')
-          : '-') +
-        '</td></tr>';
-    }).join('');
+    const docs = snap.docs;
+    const pending = docs.filter(d => (d.data().status || '') === 'PENDING');
     
-    tbody.querySelectorAll('.approve-btn').forEach(btn => {
+    // ===== Kartu PENDING (satu klik konfirmasi) =====
+    if (cardsEl) {
+      if (pending.length === 0) {
+        cardsEl.innerHTML = '<p style="color:var(--text-muted);padding:0.5rem 0;">Tidak ada top up yang menunggu. Semua sudah diproses.</p>';
+      } else {
+        cardsEl.innerHTML = pending.map(doc => {
+          const t = doc.data();
+          const time = t.createdAt ? new Date(t.createdAt.seconds * 1000).toLocaleString('id-ID') : '-';
+          const bukti = t.buktiUrl || t.proofURL || '';
+          const email = t.email || '-';
+          const nominal = t.nominal || 0;
+          return `
+            <div class="card" style="padding:1rem;margin-bottom:0.75rem;border:1.5px solid var(--pink);">
+              <div style="display:flex;flex-wrap:wrap;gap:1rem;align-items:flex-start;">
+                <div style="flex:1;min-width:180px;">
+                  <div style="font-size:0.8rem;color:var(--text-muted);">Email user</div>
+                  <div style="font-weight:600;word-break:break-all;">${email}</div>
+                  <div style="margin-top:0.5rem;font-size:0.8rem;color:var(--text-muted);">Nominal top up</div>
+                  <div style="font-size:1.35rem;font-weight:700;color:var(--pink);">${formatRupiah(nominal)}</div>
+                  <div style="margin-top:0.35rem;font-size:0.8rem;color:var(--text-muted);">${time}</div>
+                  <div style="margin-top:0.35rem;"><span class="status-badge status-pending">PENDING</span></div>
+                </div>
+                ${bukti ? `
+                <div style="flex-shrink:0;">
+                  <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.25rem;">Bukti TF</div>
+                  <a href="${bukti}" target="_blank" rel="noopener">
+                    <img src="${bukti}" alt="Bukti" style="width:100px;height:100px;object-fit:cover;border-radius:10px;border:1px solid var(--border);">
+                  </a>
+                </div>` : '<div style="color:var(--text-muted);font-size:0.85rem;">Belum ada bukti</div>'}
+                <div style="display:flex;flex-direction:column;gap:0.4rem;min-width:140px;">
+                  <button class="btn btn-primary btn-sm approve-btn" data-id="${doc.id}" data-uid="${t.userId || ''}" data-nominal="${nominal}" data-email="${email}" style="width:100%;">
+                    <i class="fa-solid fa-check"></i> Konfirmasi &amp; Tambah Saldo
+                  </button>
+                  <button class="btn btn-danger btn-sm reject-btn" data-id="${doc.id}" style="width:100%;">
+                    <i class="fa-solid fa-xmark"></i> Tolak
+                  </button>
+                </div>
+              </div>
+            </div>`;
+        }).join('');
+      }
+    }
+    
+    // ===== Tabel riwayat =====
+    if (tbody) {
+      tbody.innerHTML = docs.map(doc => {
+        const t = doc.data();
+        const time = t.createdAt ? new Date(t.createdAt.seconds * 1000).toLocaleString('id-ID') : '-';
+        const status = t.status || 'PENDING';
+        const statusClass = status === 'PENDING' ? 'status-pending' : status === 'APPROVED' ? 'status-approved' : 'status-rejected';
+        const bukti = t.buktiUrl || t.proofURL || '';
+        let aksi = '';
+        if (status === 'PENDING') {
+          aksi = '<button class="btn btn-primary btn-sm approve-btn" data-id="' + doc.id + '" data-uid="' + (t.userId||'') + '" data-nominal="' + (t.nominal||0) + '" data-email="' + (t.email||'') + '"><i class="fa-solid fa-check"></i></button> ' +
+                 '<button class="btn btn-danger btn-sm reject-btn" data-id="' + doc.id + '"><i class="fa-solid fa-xmark"></i></button> ';
+        }
+        if (bukti) {
+          aksi += '<a href="' + bukti + '" target="_blank" class="btn btn-secondary btn-sm"><i class="fa-solid fa-image"></i></a>';
+        }
+        if (!aksi) aksi = '-';
+        return '<tr>' +
+          '<td style="word-break:break-all;font-size:0.85rem;">' + (t.email || '-') + '</td>' +
+          '<td>' + formatRupiah(t.nominal) + '</td>' +
+          '<td><span class="status-badge ' + statusClass + '">' + status + '</span></td>' +
+          '<td style="font-size:0.8rem;">' + time + '</td>' +
+          '<td>' + aksi + '</td></tr>';
+      }).join('');
+    }
+    
+    // ===== Event: Approve (tambah saldo + ubah status) =====
+    document.querySelectorAll('.approve-btn').forEach(btn => {
       btn.addEventListener('click', async () => {
         const id = btn.dataset.id;
         const uid = btn.dataset.uid;
         const nominal = parseInt(btn.dataset.nominal, 10);
+        const email = btn.dataset.email || '';
+        if (!id || !uid || !nominal) {
+          showToast('Data top up tidak lengkap', 'error');
+          return;
+        }
+        if (!confirm('Konfirmasi top up?\n\nEmail: ' + email + '\nNominal: ' + formatRupiah(nominal) + '\n\nSaldo user akan ditambah dan status jadi APPROVED.')) return;
+        
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
         
         try {
           await db.runTransaction(async (tx) => {
@@ -119,10 +185,12 @@ async function loadTopups() {
             const userRef = db.collection('users').doc(uid);
             
             const topupDoc = await tx.get(topupRef);
-            if (topupDoc.data().status !== 'PENDING') throw new Error('Sudah diproses');
+            if (!topupDoc.exists) throw new Error('Data top up tidak ditemukan');
+            if (topupDoc.data().status !== 'PENDING') throw new Error('Sudah diproses sebelumnya');
             
             const userDoc = await tx.get(userRef);
-            const balance = userDoc.data().balance || 0;
+            if (!userDoc.exists) throw new Error('User tidak ditemukan di database');
+            const balance = (userDoc.data().balance || 0);
             
             tx.update(topupRef, {
               status: 'APPROVED',
@@ -135,6 +203,7 @@ async function loadTopups() {
             const histRef = db.collection('balance_history').doc();
             tx.set(histRef, {
               userId: uid,
+              email: email,
               amount: nominal,
               type: 'topup_approved',
               topupId: id,
@@ -142,17 +211,22 @@ async function loadTopups() {
             });
           });
           
-          showToast('Top up disetujui!', 'success');
+          showToast('Berhasil! Saldo ' + email + ' +' + formatRupiah(nominal), 'success');
           loadTopups();
           loadUsers();
         } catch (e) {
+          console.error(e);
           showToast(e.message || 'Gagal menyetujui', 'error');
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-check"></i> Konfirmasi';
         }
       });
     });
     
-    tbody.querySelectorAll('.reject-btn').forEach(btn => {
+    // ===== Event: Reject =====
+    document.querySelectorAll('.reject-btn').forEach(btn => {
       btn.addEventListener('click', async () => {
+        if (!confirm('Tolak permintaan top up ini?')) return;
         try {
           await db.collection('topups').doc(btn.dataset.id).update({
             status: 'REJECTED',
@@ -168,7 +242,9 @@ async function loadTopups() {
     });
     
   } catch (e) {
-    tbody.innerHTML = '<tr><td colspan="5">Error: ' + e.message + '</td></tr>';
+    console.error(e);
+    if (tbody) tbody.innerHTML = '<tr><td colspan="5">Error: ' + e.message + '</td></tr>';
+    if (cardsEl) cardsEl.innerHTML = '<p style="color:#ef4444;">Error: ' + e.message + '</p>';
   }
 }
 

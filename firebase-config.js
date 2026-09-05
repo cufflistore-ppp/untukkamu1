@@ -12,7 +12,11 @@ const firebaseConfig = {
   measurementId: "G-KMGH71TFSQ"
 };
 
+// ===== ImgBB API Key (mudah diganti di sini) =====
+const IMGBB_API_KEY = "8b13b584cdf42031718bc034eefcef14";
+
 // Initialize Firebase (using compat for simpler multi-page setup)
+// CATATAN: Tidak pakai Firebase Storage (Spark plan). Semua upload gambar via ImgBB.
 if (typeof firebase !== 'undefined') {
   firebase.initializeApp(firebaseConfig);
 }
@@ -20,9 +24,8 @@ if (typeof firebase !== 'undefined') {
 // Export references
 const auth = typeof firebase !== 'undefined' ? firebase.auth() : null;
 const db = typeof firebase !== 'undefined' ? firebase.firestore() : null;
-const storage = typeof firebase !== 'undefined' ? firebase.storage() : null;
 
-// Admin email (server-side validation still required)
+// Admin email (server-side validation still required via Firestore Rules)
 const ADMIN_EMAIL = "raffliraffli649@gmail.com";
 
 // Theme persistence
@@ -103,7 +106,7 @@ function showToast(message, type = 'info') {
 
 // Format Rupiah
 function formatRupiah(num) {
-  return 'Rp' + Number(num).toLocaleString('id-ID');
+  return 'Rp' + Number(num || 0).toLocaleString('id-ID');
 }
 
 // Generate random project code
@@ -116,20 +119,38 @@ function generateProjectCode(length = 7) {
   return code;
 }
 
+// ===== ImgBB Upload Helper =====
+async function uploadToImgBB(fileOrBase64) {
+  if (!IMGBB_API_KEY) throw new Error('IMGBB_API_KEY belum diset');
+  const formData = new FormData();
+  if (typeof fileOrBase64 === 'string') {
+    const pure = fileOrBase64.replace(/^data:image\/\w+;base64,/, '');
+    formData.append('image', pure);
+  } else {
+    formData.append('image', fileOrBase64);
+  }
+  const res = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_API_KEY, {
+    method: 'POST',
+    body: formData
+  });
+  const json = await res.json();
+  if (!json.success) {
+    throw new Error((json.error && json.error.message) || 'Upload ImgBB gagal');
+  }
+  return json.data.url;
+}
+
 // Init on every page
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   hideLoader();
-  // Fallback sesuai jaringan: max 1.2 detik
   setTimeout(hideLoader, 1200);
   window.addEventListener('load', hideLoader);
   
-  // Theme toggle buttons
   document.querySelectorAll('.theme-toggle').forEach(btn => {
     btn.addEventListener('click', toggleTheme);
   });
   
-  // Mobile menu
   const toggle = document.querySelector('.nav-toggle');
   const mobileMenu = document.querySelector('.mobile-menu');
   if (toggle && mobileMenu) {
@@ -144,7 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   
-  // Nav links with loader
   document.querySelectorAll('[data-nav]').forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();

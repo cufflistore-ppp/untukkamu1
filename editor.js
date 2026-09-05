@@ -309,6 +309,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     try {
+      // Upload foto ke ImgBB jika masih data URL (base64)
+      if (newData.photo && typeof newData.photo === 'string' && newData.photo.startsWith('data:')) {
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Upload foto...';
+        newData.photo = await uploadToImgBB(newData.photo);
+      }
+      
       // Server-side edit limit check should be in Cloud Function
       // This is client-side structure
       await db.collection('projects').doc(project.id).update({
