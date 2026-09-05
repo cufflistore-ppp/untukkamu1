@@ -30,7 +30,6 @@ async function requireAdmin() {
     return null;
   }
   
-  // Client-side check (server-side must also enforce)
   if (user.email !== ADMIN_EMAIL) {
     showToast('Akses ditolak. Hanya admin yang diizinkan.', 'error');
     navigateTo('index.html');
@@ -53,21 +52,26 @@ async function getUserProfile(uid) {
 }
 
 async function createUserProfile(user) {
-  if (!db) return;
-  const ref = db.collection('users').doc(user.uid);
-  const snap = await ref.get();
-  if (!snap.exists) {
-    await ref.set({
-      uid: user.uid,
-      email: user.email,
-      displayName: user.displayName || user.email.split('@')[0],
-      photoURL: user.photoURL || '',
-      balance: 0,
-      projectCount: 0,
-      role: user.email === ADMIN_EMAIL ? 'admin' : 'user',
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
+  if (!db || !user) return;
+  try {
+    const ref = db.collection('users').doc(user.uid);
+    const snap = await ref.get();
+    if (!snap.exists) {
+      await ref.set({
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName || (user.email ? user.email.split('@')[0] : 'User'),
+        photoURL: user.photoURL || '',
+        balance: 0,
+        projectCount: 0,
+        purchaseCount: 0,
+        role: user.email === ADMIN_EMAIL ? 'admin' : 'user',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+  } catch (e) {
+    console.error('createUserProfile error:', e);
   }
 }
 
@@ -97,12 +101,38 @@ async function registerWithEmail(email, password, displayName) {
 async function loginWithGoogle() {
   try {
     const provider = new firebase.auth.GoogleAuthProvider();
-    const result = await auth.signInWithPopup(provider);
-    await createUserProfile(result.user);
-    return { success: true, user: result.user };
+    provider.setCustomParameters({ prompt: 'select_account' });
+    
+    // Deteksi mobile → pakai redirect (lebih stabil)
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      await auth.signInWithRedirect(provider);
+      return { success: true, redirect: true };
+    } else {
+      const result = await auth.signInWithPopup(provider);
+      await createUserProfile(result.user);
+      return { success: true, user: result.user };
+    }
   } catch (e) {
-    return { success: false, error: mapAuthError(e.code) };
+    console.error('Google login error:', e);
+    return { success: false, error: mapAuthError(e.code) || e.message };
   }
+}
+
+// Handle redirect result (setelah Google login di mobile)
+async function handleRedirectResult() {
+  if (!auth) return null;
+  try {
+    const result = await auth.getRedirectResult();
+    if (result && result.user) {
+      await createUserProfile(result.user);
+      return result.user;
+    }
+  } catch (e) {
+    console.error('Redirect result error:', e);
+  }
+  return null;
 }
 
 async function logout() {
@@ -124,7 +154,11 @@ function mapAuthError(code) {
     'auth/invalid-email': 'Format email tidak valid',
     'auth/popup-closed-by-user': 'Login dibatalkan',
     'auth/network-request-failed': 'Koneksi gagal. Coba lagi.',
-    'auth/too-many-requests': 'Terlalu banyak percobaan. Coba nanti.'
+    'auth/too-many-requests': 'Terlalu banyak percobaan. Coba nanti.',
+    'auth/account-exists-with-different-credential': 'Akun sudah terdaftar dengan metode lain',
+    'auth/popup-blocked': 'Popup diblokir browser. Izinkan popup atau coba lagi.',
+    'auth/cancelled-popup-request': 'Login dibatalkan',
+    'auth/operation-not-allowed': 'Login Google belum diaktifkan di Firebase Console'
   };
   return map[code] || 'Terjadi kesalahan. Coba lagi.';
 }
@@ -142,11 +176,10 @@ function initAuthUI() {
       authButtons.forEach(el => el.classList.add('hidden'));
       userButtons.forEach(el => el.classList.remove('hidden'));
       
-      // Update profile display
       const nameEls = document.querySelectorAll('.user-display-name');
       nameEls.forEach(el => el.textContent = user.displayName || user.email);
       
-      // Admin check
+      // Admin check — langsung tampilkan
       if (user.email === ADMIN_EMAIL) {
         adminLinks.forEach(el => el.classList.remove('hidden'));
       } else {
@@ -154,11 +187,13 @@ function initAuthUI() {
       }
       
       // Balance
-      const profile = await getUserProfile(user.uid);
-      if (profile) {
-        const balEls = document.querySelectorAll('.user-balance');
-        balEls.forEach(el => el.textContent = formatRupiah(profile.balance || 0));
-      }
+      try {
+        const profile = await getUserProfile(user.uid);
+        if (profile) {
+          const balEls = document.querySelectorAll('.user-balance');
+          balEls.forEach(el => el.textContent = formatRupiah(profile.balance || 0));
+        }
+      } catch (e) {}
     } else {
       authButtons.forEach(el => el.classList.remove('hidden'));
       userButtons.forEach(el => el.classList.add('hidden'));

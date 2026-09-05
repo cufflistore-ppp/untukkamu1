@@ -12,9 +12,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   
   try {
+    // Ambil tanpa orderBy dulu (hindari error index)
     const snap = await db.collection('projects')
       .where('ownerId', '==', user.uid)
-      .orderBy('createdAt', 'desc')
       .get();
     
     if (snap.empty) {
@@ -24,8 +24,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     empty.classList.add('hidden');
     
-    grid.innerHTML = snap.docs.map(doc => {
-      const p = doc.data();
+    // Sort di client
+    const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    docs.sort((a, b) => {
+      const ta = a.createdAt?.seconds || 0;
+      const tb = b.createdAt?.seconds || 0;
+      return tb - ta;
+    });
+    
+    grid.innerHTML = docs.map(p => {
       const isFree = p.isFree !== false && (p.maxEdits >= 999 || p.price === 0);
       const editsUsed = p.editsUsed || 0;
       const maxEdits = p.maxEdits || (isFree ? 999 : 2);
@@ -94,6 +101,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   } catch (e) {
     console.error(e);
     empty.classList.remove('hidden');
-    empty.querySelector('p').textContent = 'Gagal memuat proyek. Pastikan index Firestore sudah dibuat.';
+    empty.querySelector('p').textContent = 'Gagal memuat proyek. Coba refresh halaman.';
   }
 });

@@ -104,11 +104,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
     
+    // Pastikan profil user ada
+    await createUserProfile(user);
+    
     if (isFree) {
-      // Create free project
       await createProject(user, t);
     } else {
-      // Purchase flow
       await purchaseTemplate(user, t);
     }
   });
@@ -118,18 +119,19 @@ async function createProject(user, template) {
   const code = generateProjectCode();
   
   if (!db) {
-    showToast('Mode demo: Project dibuat (konfigurasi Firebase untuk simpan permanen)', 'info');
-    setTimeout(() => navigateTo(`editor.html?code=${code}&template=${template.id}`), 1000);
+    showToast('Mode demo: Project dibuat', 'info');
+    setTimeout(() => navigateTo(`editor.html?code=${code}&template=${template.id}`), 800);
     return;
   }
   
   try {
-    // Check unique code
+    // Cek kode unik
     const existing = await db.collection('projects').where('code', '==', code).get();
     if (!existing.empty) {
       return createProject(user, template); // retry
     }
     
+    // Buat project dulu
     await db.collection('projects').add({
       code,
       ownerId: user.uid,
@@ -149,16 +151,21 @@ async function createProject(user, template) {
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
     
-    // Update project count
-    await db.collection('users').doc(user.uid).update({
-      projectCount: firebase.firestore.FieldValue.increment(1)
-    });
+    // Update projectCount (sekarang rules sudah mengizinkan)
+    try {
+      await db.collection('users').doc(user.uid).update({
+        projectCount: firebase.firestore.FieldValue.increment(1),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    } catch (updErr) {
+      console.warn('Update projectCount gagal (tidak kritis):', updErr.message);
+    }
     
     showToast('Project berhasil dibuat!', 'success');
     navigateTo(`editor.html?code=${code}`);
   } catch (e) {
-    console.error(e);
-    showToast('Gagal membuat project', 'error');
+    console.error('createProject error:', e);
+    showToast('Gagal membuat project: ' + (e.message || 'Coba lagi'), 'error');
   }
 }
 
@@ -176,12 +183,8 @@ async function purchaseTemplate(user, template) {
       return;
     }
     
-    // In production, this MUST be done via Cloud Function with transaction
-    // Frontend-only is for demo structure only
-    showToast('Pembelian harus melalui Cloud Function untuk keamanan. Struktur sudah disiapkan.', 'info');
-    
-    // Demo: proceed
     const code = generateProjectCode();
+    
     await db.runTransaction(async (tx) => {
       const userRef = db.collection('users').doc(user.uid);
       const userDoc = await tx.get(userRef);
@@ -191,7 +194,8 @@ async function purchaseTemplate(user, template) {
       
       tx.update(userRef, {
         balance: balance - template.price,
-        projectCount: firebase.firestore.FieldValue.increment(1)
+        projectCount: firebase.firestore.FieldValue.increment(1),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       });
       
       const projectRef = db.collection('projects').doc();
@@ -208,13 +212,12 @@ async function purchaseTemplate(user, template) {
         editsUsed: 0,
         data: {},
         musicEnabled: false,
-      accessCode: '',
+        accessCode: '',
         thumbnail: template.thumbnail,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       });
       
-      // Purchase record
       const purchaseRef = db.collection('purchases').doc();
       tx.set(purchaseRef, {
         userId: user.uid,

@@ -1,4 +1,14 @@
 document.addEventListener('DOMContentLoaded', async () => {
+  // Handle Google redirect result
+  try {
+    const redirectedUser = await handleRedirectResult();
+    if (redirectedUser) {
+      showToast('Berhasil masuk!', 'success');
+      navigateTo('profile.html');
+      return;
+    }
+  } catch (e) {}
+
   const user = await getCurrentUser();
   if (user) {
     navigateTo('profile.html');
@@ -9,6 +19,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const errorEl = document.getElementById('registerError');
   const registerBtn = document.getElementById('registerBtn');
   const googleBtn = document.getElementById('googleRegisterBtn');
+  
+  if (!form) return;
   
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -47,19 +59,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
   
-  googleBtn.addEventListener('click', async () => {
-    googleBtn.disabled = true;
-    googleBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
-    
-    const result = await loginWithGoogle();
-    
-    if (result.success) {
-      showToast('Berhasil daftar dengan Google!', 'success');
-      navigateTo('profile.html');
-    } else {
-      showToast(result.error, 'error');
-      googleBtn.disabled = false;
-      googleBtn.innerHTML = '<i class="fa-brands fa-google"></i> Daftar dengan Google';
-    }
-  });
+  if (googleBtn) {
+    googleBtn.addEventListener('click', async () => {
+      googleBtn.disabled = true;
+      googleBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+      
+      const result = await loginWithGoogle();
+      
+      if (result.success) {
+        if (result.redirect) {
+          showToast('Mengarahkan ke Google...', 'info');
+        } else {
+          showToast('Berhasil daftar dengan Google!', 'success');
+          navigateTo('profile.html');
+        }
+      } else {
+        showToast(result.error || 'Gagal daftar dengan Google', 'error');
+        googleBtn.disabled = false;
+        googleBtn.innerHTML = '<i class="fa-brands fa-google"></i> Daftar dengan Google';
+      }
+    });
+  }
 });

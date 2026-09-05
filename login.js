@@ -4,13 +4,25 @@ document.addEventListener('DOMContentLoaded', async () => {
   setTimeout(() => {
     const l = document.getElementById('page-loader');
     if (l) l.classList.add('hidden');
-  }, 500);
+  }, 400);
 
-  // Redirect if already logged in (with timeout)
+  // Handle Google redirect result (setelah user pilih akun Google di mobile)
+  try {
+    const redirectedUser = await handleRedirectResult();
+    if (redirectedUser) {
+      showToast('Berhasil masuk!', 'success');
+      navigateTo('profile.html');
+      return;
+    }
+  } catch (e) {
+    console.warn('Redirect handle error:', e);
+  }
+
+  // Redirect if already logged in
   try {
     const user = await Promise.race([
       getCurrentUser(),
-      new Promise(r => setTimeout(() => r(null), 3000))
+      new Promise(r => setTimeout(() => r(null), 2500))
     ]);
     if (user) {
       navigateTo('profile.html');
@@ -58,18 +70,26 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (googleBtn) {
     googleBtn.addEventListener('click', async () => {
       googleBtn.disabled = true;
+      googleBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
       try {
         const result = await loginWithGoogle();
         if (result.success) {
-          showToast('Berhasil masuk!', 'success');
-          navigateTo('profile.html');
+          if (result.redirect) {
+            // Mobile: akan redirect, biarkan
+            showToast('Mengarahkan ke Google...', 'info');
+          } else {
+            showToast('Berhasil masuk!', 'success');
+            navigateTo('profile.html');
+          }
         } else {
           showToast(result.error || 'Gagal masuk dengan Google', 'error');
           googleBtn.disabled = false;
+          googleBtn.innerHTML = '<i class="fa-brands fa-google"></i> Masuk dengan Google';
         }
       } catch (e) {
         showToast('Gagal masuk dengan Google', 'error');
         googleBtn.disabled = false;
+        googleBtn.innerHTML = '<i class="fa-brands fa-google"></i> Masuk dengan Google';
       }
     });
   }

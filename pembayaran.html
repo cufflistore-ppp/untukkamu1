@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Top Up — 𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</title>
+  <title>Pembayaran — 𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -51,46 +51,46 @@
   <main class="page-content">
     <div class="container" style="max-width: 480px;">
       <div class="section-title">
-        <i class="fa-solid fa-wallet"></i>
-        <h1>Top Up Saldo</h1>
+        <i class="fa-solid fa-qrcode"></i>
+        <h1>Pembayaran</h1>
       </div>
       
       <div class="card mb-2" style="padding: 1.2rem; text-align: center;">
-        <p style="color: var(--text-secondary); margin-bottom: 0.3rem;">Saldo saat ini</p>
-        <div class="stat-value user-balance" style="font-size: 2rem;">Rp0</div>
+        <p style="color: var(--text-secondary); margin-bottom: 0.3rem;">Nominal yang harus dibayar</p>
+        <div class="stat-value" id="displayNominal" style="font-size: 2rem; color: var(--pink);">Rp0</div>
       </div>
       
-      <!-- Form Nominal Saja -->
+      <!-- QRIS -->
+      <div class="qris-box">
+        <h3><i class="fa-solid fa-qrcode"></i> Scan QRIS</h3>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0.5rem 0;">
+          Scan QRIS di bawah menggunakan aplikasi e-wallet atau mobile banking.
+        </p>
+        <img src="qris.jpg" alt="QRIS Admin" class="qris-img" id="qrisImage">
+        <p style="font-size: 0.8rem; color: var(--text-muted);">Transfer sesuai nominal di atas</p>
+      </div>
+      
       <div class="card" style="padding: 1.5rem;">
-        <div class="form-group">
-          <label class="form-label" for="nominal">Nominal Top Up</label>
-          <input type="number" id="nominal" class="form-input" placeholder="Contoh: 5000" min="2000" max="1000000" inputmode="numeric">
-          <p class="form-hint">Minimal Rp2.000 — Maksimal Rp1.000.000</p>
-          <div class="form-error" id="nominalError"></div>
-        </div>
-        
-        <!-- Quick amount buttons -->
-        <div class="flex gap-1 flex-wrap mb-2" style="margin-top: 0.5rem;">
-          <button type="button" class="btn btn-outline btn-sm quick-amount" data-amount="5000">Rp5.000</button>
-          <button type="button" class="btn btn-outline btn-sm quick-amount" data-amount="10000">Rp10.000</button>
-          <button type="button" class="btn btn-outline btn-sm quick-amount" data-amount="25000">Rp25.000</button>
-          <button type="button" class="btn btn-outline btn-sm quick-amount" data-amount="50000">Rp50.000</button>
-        </div>
-        
-        <button type="button" class="btn btn-primary w-full" id="lanjutBayarBtn" disabled>
-          <i class="fa-solid fa-arrow-right"></i> Lanjut ke Pembayaran
+        <button type="button" class="btn btn-primary w-full" id="waConfirmBtn">
+          <i class="fa-brands fa-whatsapp"></i> Kirim Bukti via WhatsApp
         </button>
+        
+        <p class="text-center mt-2" style="font-size: 0.85rem; color: var(--text-muted);">
+          Setelah transfer, klik tombol di atas lalu kirim foto bukti TF di chat WhatsApp.
+        </p>
+        
+        <a href="topup.html" class="btn btn-outline w-full mt-2" data-nav style="margin-top: 0.8rem;">
+          <i class="fa-solid fa-arrow-left"></i> Ubah Nominal
+        </a>
       </div>
       
       <div class="card mt-2" style="padding: 1.2rem;">
-        <h3 class="mb-1"><i class="fa-solid fa-circle-info"></i> Cara Top Up</h3>
-        <ol style="font-size: 0.9rem; color: var(--text-secondary); padding-left: 1.2rem;">
-          <li style="margin-bottom: 0.4rem;">Masukkan nominal yang ingin diisi</li>
-          <li style="margin-bottom: 0.4rem;">Klik <strong>Lanjut ke Pembayaran</strong></li>
-          <li style="margin-bottom: 0.4rem;">Scan QRIS lalu transfer sesuai nominal</li>
-          <li style="margin-bottom: 0.4rem;">Kirim bukti transfer via WhatsApp</li>
-          <li>Admin akan cek dan saldo akan ditambahkan</li>
-        </ol>
+        <h3 class="mb-1"><i class="fa-solid fa-circle-info"></i> Catatan</h3>
+        <ul style="font-size: 0.9rem; color: var(--text-secondary); padding-left: 1.2rem;">
+          <li style="margin-bottom: 0.4rem;">Pastikan nominal transfer <strong>sama persis</strong></li>
+          <li style="margin-bottom: 0.4rem;">Kirim bukti transfer yang jelas</li>
+          <li>Admin biasanya memproses dalam 1–30 menit</li>
+        </ul>
       </div>
     </div>
   </main>
@@ -104,6 +104,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js"></script>
   <script src="auth.js"></script>
-  <script src="topup.js"></script>
+  <script src="pembayaran.js"></script>
 </body>
 </html>

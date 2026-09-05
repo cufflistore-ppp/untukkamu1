@@ -32,29 +32,25 @@ service cloud.firestore {
         && request.resource.data.balance == 0
         && request.resource.data.role in ['user', 'admin'];
 
-      // User TIDAK boleh ubah balance sendiri
-      // Hanya boleh update field non-sensitif (displayName, photoURL)
+      // User boleh update field non-sensitif + projectCount (saat buat project)
+      // Balance & role hanya boleh diubah admin
       allow update: if isAdmin()
         || (isOwner(userId)
             && !request.resource.data.diff(resource.data).affectedKeys()
-                .hasAny(['balance', 'role', 'uid', 'email', 'projectCount']));
+                .hasAny(['balance', 'role', 'uid', 'email']));
 
       allow delete: if isAdmin();
     }
 
     // ========== TEMPLATES ==========
     match /templates/{templateId} {
-      // Semua orang bisa lihat template aktif
       allow read: if true;
-
-      // Hanya admin yang boleh kelola template
       allow create, update, delete: if isAdmin();
     }
 
     // ========== PROJECTS ==========
     match /projects/{projectId} {
       // Public bisa baca (untuk link publik p.html?code=XXX)
-      // Owner & admin juga bisa baca
       allow read: if true;
 
       // User hanya boleh buat project untuk dirinya sendiri
@@ -63,8 +59,7 @@ service cloud.firestore {
         && request.resource.data.keys().hasAll(['code', 'ownerId', 'templateId', 'isFree', 'maxEdits', 'editsUsed'])
         && request.resource.data.editsUsed == 0;
 
-      // Owner boleh update (edit project), tapi tidak boleh ubah ownerId / code / maxEdits
-      // Batas edit dicek di Cloud Function (lebih aman)
+      // Owner boleh update (edit project), tapi tidak boleh ubah ownerId / code / maxEdits / isFree / price
       allow update: if isSignedIn()
         && resource.data.ownerId == request.auth.uid
         && !request.resource.data.diff(resource.data).affectedKeys()
@@ -76,11 +71,9 @@ service cloud.firestore {
 
     // ========== TOPUPS ==========
     match /topups/{topupId} {
-      // User hanya lihat topup miliknya, admin lihat semua
       allow read: if isSignedIn()
         && (resource.data.userId == request.auth.uid || isAdmin());
 
-      // User boleh buat permintaan topup
       allow create: if isSignedIn()
         && request.resource.data.userId == request.auth.uid
         && request.resource.data.email == request.auth.token.email
@@ -88,7 +81,6 @@ service cloud.firestore {
         && isValidTopupNominal()
         && request.resource.data.keys().hasAll(['userId', 'email', 'nominal', 'status', 'proofURL']);
 
-      // Hanya admin yang boleh approve / reject
       allow update: if isAdmin()
         && request.resource.data.status in ['APPROVED', 'REJECTED', 'PENDING'];
 
@@ -97,13 +89,9 @@ service cloud.firestore {
 
     // ========== PURCHASES ==========
     match /purchases/{purchaseId} {
-      // User lihat pembelian sendiri, admin lihat semua
       allow read: if isSignedIn()
         && (resource.data.userId == request.auth.uid || isAdmin());
 
-      // Pembelian seharusnya lewat Cloud Function (transaction)
-      // Sementara izinkan create jika user signed in (untuk demo)
-      // Nanti ganti jadi: allow write: if false;
       allow create: if isSignedIn()
         && request.resource.data.userId == request.auth.uid;
 
@@ -115,7 +103,6 @@ service cloud.firestore {
       allow read: if isSignedIn()
         && (resource.data.userId == request.auth.uid || isAdmin());
 
-      // Hanya admin / Cloud Function yang boleh tulis
       allow create: if isAdmin();
       allow update, delete: if false;
     }

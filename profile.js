@@ -18,6 +18,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   const avatar = document.getElementById('userAvatar');
   avatar.src = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email)}&background=c4b5fd&color=fff&size=180`;
   
+  // Admin button — tampilkan langsung jika email admin
+  const adminBtn = document.querySelector('.admin-only');
+  if (adminBtn && user.email === ADMIN_EMAIL) {
+    adminBtn.classList.remove('hidden');
+  }
+  
   // Load profile data
   const profile = await getUserProfile(user.uid);
   if (profile) {
@@ -25,24 +31,33 @@ document.addEventListener('DOMContentLoaded', async () => {
       el.textContent = formatRupiah(profile.balance || 0);
     });
     document.getElementById('projectCount').textContent = profile.projectCount || 0;
+    if (document.getElementById('purchaseCount')) {
+      document.getElementById('purchaseCount').textContent = profile.purchaseCount || 0;
+    }
   }
   
   // Logout
   document.getElementById('logoutBtn').addEventListener('click', logout);
   
-  // Load recent projects
+  // Load recent projects (tanpa orderBy dulu biar tidak error index)
   if (db) {
     try {
       const snap = await db.collection('projects')
         .where('ownerId', '==', user.uid)
-        .orderBy('createdAt', 'desc')
-        .limit(3)
+        .limit(6)
         .get();
       
       const container = document.getElementById('recentProjects');
       if (!snap.empty) {
-        container.innerHTML = snap.docs.map(doc => {
-          const p = doc.data();
+        // Sort di client
+        const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        docs.sort((a, b) => {
+          const ta = a.createdAt?.seconds || 0;
+          const tb = b.createdAt?.seconds || 0;
+          return tb - ta;
+        });
+        
+        container.innerHTML = docs.slice(0, 3).map(p => {
           return `
             <div class="card template-card">
               <div class="template-thumb">
@@ -61,7 +76,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }).join('');
       }
     } catch (e) {
-      console.log('Projects load error (index may be needed):', e.message);
+      console.log('Projects load error:', e.message);
     }
   }
 });
