@@ -66,6 +66,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Warna tema (jika ada)
     if (data.themeColor) qs.set('color', data.themeColor);
 
+    // Video premium (YouTube / MP4 URL)
+    if (data.videoUrl) qs.set('video', data.videoUrl);
+
     if (!project.isFree && project.price > 0) {
       qs.set('hideBranding', '1');
     }

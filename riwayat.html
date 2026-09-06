@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Riwayat — Untuk Kamu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="page-loader"><div class="loader-spinner"></div><div class="loader-text">𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</div></div>
+  <div class="top-bar">
+    <div class="top-bar-left"><img src="logo.jpg" alt="Logo" class="top-bar-logo"><a href="index.html" class="top-bar-brand" data-nav>𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</a></div>
+    <button class="theme-toggle" aria-label="Ganti tema"><i class="fa-solid fa-moon"></i></button>
+  </div>
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <div class="nav-links">
+        <a href="template.html" class="nav-link" data-nav><i class="fa-solid fa-file"></i><span>Template</span></a>
+        <a href="proyek.html" class="nav-link" data-nav><i class="fa-solid fa-folder"></i><span>Proyek</span></a>
+        <a href="index.html" class="nav-link" data-nav><i class="fa-solid fa-house"></i><span>Beranda</span></a>
+        <a href="about.html" class="nav-link" data-nav><i class="fa-solid fa-circle-info"></i><span>Tentang</span></a>
+        <a href="profile.html" class="nav-link active" data-nav><i class="fa-solid fa-user"></i><span>Saya</span></a>
+      </div>
+    </div>
+  </nav>
+  <main class="page-content">
+    <div class="container">
+      <div class="section-title"><i class="fa-solid fa-clock-rotate-left"></i><h1>Riwayat Transaksi</h1></div>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Waktu</th><th>Jenis</th><th>Nominal</th><th>Status</th></tr></thead>
+          <tbody id="histBody"><tr><td colspan="4" style="text-align:center;color:var(--text-muted);">Memuat...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const user = await getCurrentUser();
+      const body = document.getElementById('histBody');
+      if (!user) {
+        body.innerHTML = '<tr><td colspan="4" style="text-align:center;">Silakan login dulu.</td></tr>';
+        return;
+      }
+      if (!db) return;
+      try {
+        const snap = await db.collection('topups').where('userId', '==', user.uid).limit(50).get();
+        const rows = snap.docs.map(d => d.data()).sort((a,b) => (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+        if (!rows.length) {
+          body.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);">Belum ada riwayat.</td></tr>';
+          return;
+        }
+        body.innerHTML = rows.map(t => {
+          const time = t.createdAt ? new Date(t.createdAt.seconds*1000).toLocaleString('id-ID') : '-';
+          return `<tr><td>${time}</td><td>Top Up</td><td>${formatRupiah(t.nominal||0)}</td><td>${t.status||'PENDING'}</td></tr>`;
+        }).join('');
+      } catch (e) {
+        body.innerHTML = '<tr><td colspan="4">Error: '+e.message+'</td></tr>';
+      }
+    });
+  </script>
+</body>
+</html>

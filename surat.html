@@ -65,7 +65,13 @@
     if (params.get('title')) document.getElementById('title').textContent = params.get('title');
     if (params.get('recipient') || params.get('name')) document.getElementById('name').textContent = 'Kepada: ' + (params.get('recipient') || params.get('name'));
     if (params.get('message')) document.getElementById('message').textContent = params.get('message');
-    if (params.get('hideBranding') === '1') document.getElementById('branding').style.display = 'none';
+    const color = params.get('color');
+      if (color) {
+        const title = document.getElementById('title');
+        if (title) title.style.color = color;
+        document.body.style.background = 'linear-gradient(135deg, ' + color + '22, #fefce8, ' + color + '22)';
+      }
+      if (params.get('hideBranding') === '1') document.getElementById('branding').style.display = 'none';
   </script>
 <script src="music.js"></script>
 <script>

@@ -88,8 +88,22 @@
     if (params.get('title')) document.getElementById('title').textContent = params.get('title');
     if (params.get('recipient') || params.get('name')) document.getElementById('name').textContent = params.get('recipient') || params.get('name');
     if (params.get('message')) document.getElementById('message').textContent = params.get('message');
-    if (params.get('photo')) document.getElementById('photo').src = params.get('photo');
+    const photoKey = params.get('photoKey');
+    if (photoKey) {
+      try {
+        const photoData = sessionStorage.getItem(photoKey);
+        if (photoData) document.getElementById('photo').src = photoData;
+      } catch(e) {}
+    } else if (params.get('photo')) document.getElementById('photo').src = params.get('photo');
     if (params.get('hideBranding') === '1') document.getElementById('branding').style.display = 'none';
+    const color = params.get('color');
+    if (color) {
+      const photo = document.getElementById('photo');
+      const title = document.getElementById('title');
+      if (photo) { photo.style.borderColor = color; photo.style.boxShadow = '0 0 20px ' + color + '66'; }
+      if (title) title.style.color = color;
+      document.body.style.background = 'linear-gradient(135deg, ' + color + '22, #ffffff, ' + color + '33)';
+    }
     
     // Confetti
     const colors = ['#fbbf24','#f472b6','#a78bfa','#38bdf8','#34d399','#f87171'];
