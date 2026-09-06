@@ -227,18 +227,30 @@ const CATEGORY_MUSIC = {
   holiday: { id: 'cat-holiday', title: 'Holiday Mood', url: 'https://cdn.pixabay.com/download/audio/2022/10/25/audio_191aa2c0b5.mp3?filename=inspiring-cinematic-ambient-116199.mp3' }
 };
 
+const DEFAULT_MUSIC = {
+  id: 'default-soft',
+  title: 'Soft Background',
+  url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=soft-background-music-40839.mp3'
+};
+
 function getMusicForTemplate(templateId, category) {
-  if (TEMPLATE_MUSIC[templateId]) return TEMPLATE_MUSIC[templateId];
-  if (category && CATEGORY_MUSIC[category]) return CATEGORY_MUSIC[category];
-  // tebak dari nama id
-  const id = String(templateId || '');
-  if (/pacar|cinta|valentine|crush|rindu|sayang|anniversary|jadian|ldt|proposal/.test(id)) return CATEGORY_MUSIC.romance;
-  if (/sahabat|bestie|bestod|bros|teman|circle|friend/.test(id)) return CATEGORY_MUSIC.friendship;
-  if (/ibu|ayah|keluarga|anak|sepupu/.test(id)) return CATEGORY_MUSIC.family;
-  if (/idul|natal|tahun-baru|imlek|kemerdekaan|kartini|halloween/.test(id)) return CATEGORY_MUSIC.holiday;
-  if (/ultah|wisuda|guru|lulus|ujian/.test(id)) return CATEGORY_MUSIC.celebration;
-  if (/surat|puisi|doa|pesan|letter/.test(id)) return CATEGORY_MUSIC.letter;
-  return TEMPLATE_MUSIC['untuk-kamu'] || CATEGORY_MUSIC.personal;
+  // SELALU kembalikan object ber-url agar tidak ada template tanpa lagu
+  let track = null;
+  if (templateId && TEMPLATE_MUSIC[templateId]) track = TEMPLATE_MUSIC[templateId];
+  else if (category && CATEGORY_MUSIC[category]) track = CATEGORY_MUSIC[category];
+  else {
+    const id = String(templateId || '');
+    if (/pacar|cinta|valentine|crush|rindu|sayang|anniversary|jadian|ldt|proposal|video-cinta|miss|romantis/.test(id)) track = CATEGORY_MUSIC.romance;
+    else if (/sahabat|bestie|bestod|bros|teman|circle|friend|curhat/.test(id)) track = CATEGORY_MUSIC.friendship;
+    else if (/ibu|ayah|keluarga|anak|sepupu|orang-tua|kakek/.test(id)) track = CATEGORY_MUSIC.family;
+    else if (/idul|natal|tahun-baru|imlek|kemerdekaan|kartini|halloween|waisak|nyepi|batik|pahlawan|sumpah/.test(id)) track = CATEGORY_MUSIC.holiday;
+    else if (/ultah|wisuda|guru|lulus|ujian|promosi|kerja|ospek|sekolah|siswa|pendidikan/.test(id)) track = CATEGORY_MUSIC.celebration;
+    else if (/surat|puisi|doa|pesan|letter|quote|rahasia|maaf|terima-kasih/.test(id)) track = CATEGORY_MUSIC.letter;
+    else if (/video|premium/.test(id)) track = CATEGORY_MUSIC.romance;
+    else track = TEMPLATE_MUSIC['untuk-kamu'] || CATEGORY_MUSIC.personal;
+  }
+  if (!track || !track.url) track = DEFAULT_MUSIC;
+  return track;
 }
 
 /**

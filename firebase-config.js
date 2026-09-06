@@ -26,7 +26,7 @@ const auth = typeof firebase !== 'undefined' ? firebase.auth() : null;
 const db = typeof firebase !== 'undefined' ? firebase.firestore() : null;
 
 // Admin email (server-side validation still required via Firestore Rules)
-const ADMIN_EMAIL = "raffliraffli649@gmail.com";
+const ADMIN_EMAIL = "untukkamuu521@gmail.com";
 
 // Theme persistence
 function initTheme() {

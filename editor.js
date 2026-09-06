@@ -13,7 +13,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   
   let project = null;
-  let photoDataUrl = null;
+  let photoDataUrl = null; // legacy single
+  let photoList = []; // multi-foto (max dari template)
+  let maxPhotos = 1;
   
   // Load project
   if (db) {
@@ -61,10 +63,53 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('editTitle').value = data.title || '';
   document.getElementById('editName').value = data.name || data.recipient || '';
   document.getElementById('editMessage').value = data.message || '';
-  if (data.photo) {
+  maxPhotos = project.maxPhotos || (data.photos && data.photos.length > 1 ? data.photos.length : 1) || 1;
+  // deteksi template album dari id
+  const tid = project.templateId || '';
+  if (/album|polaroid|strip|squad|timeline|family-album/.test(tid)) {
+    const m = tid.match(/(\d)/);
+    if (m) maxPhotos = Math.max(maxPhotos, parseInt(m[1], 10));
+    if (/album-5|polaroid-5|squad|family-album/.test(tid)) maxPhotos = Math.max(maxPhotos, 5);
+    if (/album-3|polaroid-3/.test(tid)) maxPhotos = Math.max(maxPhotos, 3);
+    if (/strip|timeline|ultah-album/.test(tid)) maxPhotos = Math.max(maxPhotos, 4);
+  }
+  const limitLabel = document.getElementById('photoLimitLabel');
+  if (limitLabel) limitLabel.textContent = '(maks ' + maxPhotos + ')';
+
+  function renderPhotoPreviews() {
+    const box = document.getElementById('photoPreviewBox');
+    const grid = document.getElementById('photoPreviewGrid');
+    if (!box || !grid) return;
+    if (!photoList.length) {
+      box.classList.add('hidden');
+      grid.innerHTML = '';
+      return;
+    }
+    box.classList.remove('hidden');
+    grid.innerHTML = photoList.map((src, i) =>
+      '<div style="position:relative;">' +
+      '<img src="' + src + '" style="width:72px;height:72px;object-fit:cover;border-radius:10px;border:1px solid var(--border-color);">' +
+      '<button type="button" class="btn btn-danger btn-sm remove-one-photo" data-i="' + i + '" style="position:absolute;top:-6px;right:-6px;padding:0.15rem 0.35rem;font-size:0.7rem;border-radius:50%;"><i class="fa-solid fa-xmark"></i></button>' +
+      '</div>'
+    ).join('');
+    grid.querySelectorAll('.remove-one-photo').forEach(btn => {
+      btn.addEventListener('click', () => {
+        photoList.splice(parseInt(btn.dataset.i, 10), 1);
+        photoDataUrl = photoList[0] || null;
+        renderPhotoPreviews();
+        updatePreview();
+      });
+    });
+  }
+
+  if (Array.isArray(data.photos) && data.photos.length) {
+    photoList = data.photos.slice(0, maxPhotos);
+    photoDataUrl = photoList[0] || null;
+    renderPhotoPreviews();
+  } else if (data.photo) {
     photoDataUrl = data.photo;
-    document.getElementById('photoPreview').src = data.photo;
-    document.getElementById('photoPreviewBox').classList.remove('hidden');
+    photoList = [data.photo];
+    renderPhotoPreviews();
   }
 
   // Video field untuk template premium (hasVideo / harga tinggi)
@@ -102,6 +147,30 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   refreshMusicUI();
 
+  function playMusicPayAnimation(success) {
+    if (!unlockMusicBtn) return;
+    unlockMusicBtn.classList.add('paying');
+    const colors = ['#f472b6', '#a78bfa', '#38bdf8', '#fbbf24', '#34d399'];
+    const rect = unlockMusicBtn.getBoundingClientRect();
+    for (let i = 0; i < 18; i++) {
+      const el = document.createElement('span');
+      el.className = 'uk-confetti-piece';
+      el.style.left = (rect.left + rect.width / 2 + (Math.random() * 60 - 30)) + 'px';
+      el.style.top = (rect.top + window.scrollY) + 'px';
+      el.style.background = colors[i % colors.length];
+      el.style.animationDelay = (Math.random() * 0.25) + 's';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1100);
+    }
+    if (success) {
+      setTimeout(() => {
+        unlockMusicBtn.classList.remove('paying');
+        unlockMusicBtn.classList.add('success-pop');
+        unlockMusicBtn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Musik Aktif!';
+      }, 400);
+    }
+  }
+
   if (unlockMusicBtn) {
     unlockMusicBtn.addEventListener('click', async () => {
       if (!project.id) {
@@ -110,20 +179,23 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
       if (!confirm('Aktifkan musik untuk project ini seharga Rp500?')) return;
       unlockMusicBtn.disabled = true;
+      unlockMusicBtn.classList.add('paying');
       unlockMusicBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
       const res = await unlockProjectMusic(project.id, user.uid);
       if (res.success) {
         project.musicEnabled = true;
+        playMusicPayAnimation(true);
         showToast(res.already ? 'Musik sudah aktif' : 'Musik berhasil diaktifkan!', 'success');
-        refreshMusicUI();
+        setTimeout(refreshMusicUI, 900);
       } else {
+        unlockMusicBtn.classList.remove('paying');
         showToast(res.error || 'Gagal unlock musik', 'error');
         if ((res.error || '').includes('Saldo')) {
           setTimeout(() => navigateTo('topup.html'), 1200);
         }
+        unlockMusicBtn.disabled = false;
+        unlockMusicBtn.innerHTML = '<i class="fa-solid fa-unlock"></i> Aktifkan Musik — Rp500';
       }
-      unlockMusicBtn.disabled = false;
-      unlockMusicBtn.innerHTML = '<i class="fa-solid fa-unlock"></i> Aktifkan Musik — Rp500';
     });
   }
   
@@ -209,14 +281,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (name) qs.set(project.templateId === 'nembak' ? 'name' : 'recipient', name);
     if (message) qs.set('message', message);
     
-    // Foto via sessionStorage biar URL tidak terlalu panjang
-    if (photoDataUrl) {
+    // Foto (single + multi) via sessionStorage
+    if (photoList.length > 1) {
       try {
-        sessionStorage.setItem('uk_photo_preview', photoDataUrl);
+        sessionStorage.setItem('uk_photos_preview', JSON.stringify(photoList));
+        qs.set('photosKey', 'uk_photos_preview');
+        sessionStorage.setItem('uk_photo_preview', photoList[0]);
+        qs.set('photoKey', 'uk_photo_preview');
+      } catch(e) {}
+    } else if (photoList.length === 1 || photoDataUrl) {
+      const one = photoList[0] || photoDataUrl;
+      try {
+        sessionStorage.setItem('uk_photo_preview', one);
         qs.set('photoKey', 'uk_photo_preview');
       } catch(e) {
-        // fallback kalau sessionStorage penuh
-        if (photoDataUrl.length < 2000) qs.set('photo', photoDataUrl);
+        if (one && one.length < 2000) qs.set('photo', one);
       }
     }
     
@@ -244,39 +323,61 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
   
   // Photo handling
-  document.getElementById('editPhoto').addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    
-    // Compress
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const maxSize = 800;
-        let w = img.width, h = img.height;
-        if (w > maxSize || h > maxSize) {
-          if (w > h) { h = h * maxSize / w; w = maxSize; }
-          else { w = w * maxSize / h; h = maxSize; }
-        }
-        canvas.width = w;
-        canvas.height = h;
-        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        photoDataUrl = canvas.toDataURL('image/jpeg', 0.75);
-        document.getElementById('photoPreview').src = photoDataUrl;
-        document.getElementById('photoPreviewBox').classList.remove('hidden');
-        updatePreview();
+  function compressImageFile(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const maxSize = 800;
+          let w = img.width, h = img.height;
+          if (w > maxSize || h > maxSize) {
+            if (w > h) { h = h * maxSize / w; w = maxSize; }
+            else { w = w * maxSize / h; h = maxSize; }
+          }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', 0.75));
+        };
+        img.onerror = reject;
+        img.src = ev.target.result;
       };
-      img.src = ev.target.result;
-    };
-    reader.readAsDataURL(file);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  document.getElementById('editPhoto').addEventListener('change', async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    const room = Math.max(0, maxPhotos - photoList.length);
+    if (room <= 0) {
+      showToast('Maksimal ' + maxPhotos + ' foto untuk template ini', 'warning');
+      e.target.value = '';
+      return;
+    }
+    const take = files.slice(0, room);
+    for (const file of take) {
+      if (!file.type.startsWith('image/')) continue;
+      try {
+        const dataUrl = await compressImageFile(file);
+        photoList.push(dataUrl);
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+    photoDataUrl = photoList[0] || null;
+    renderPhotoPreviews();
+    updatePreview();
+    e.target.value = '';
   });
   
   document.getElementById('removePhoto').addEventListener('click', () => {
     photoDataUrl = null;
+    photoList = [];
     document.getElementById('editPhoto').value = '';
-    document.getElementById('photoPreviewBox').classList.add('hidden');
+    renderPhotoPreviews();
     updatePreview();
   });
   
@@ -353,13 +454,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const themeColor = (hexEl && hexEl.value) || (pickerEl && pickerEl.value) || (activeSwatch && activeSwatch.dataset.color) || '';
     
     const vidEl = document.getElementById('editVideoUrl');
-    const newData = {
+        const newData = {
       title: document.getElementById('editTitle').value,
       name: document.getElementById('editName').value,
       message: document.getElementById('editMessage').value,
-      photo: photoDataUrl || null,
+      photo: (photoList[0] || photoDataUrl || null),
+      photos: photoList.slice(0, maxPhotos),
       themeColor: themeColor || null,
-      videoUrl: (vidEl && vidEl.value.trim()) || null
+      videoUrl: (document.getElementById('editVideoUrl') && document.getElementById('editVideoUrl').value.trim()) || null
     };
     
     if (!db || !project.id) {
@@ -370,10 +472,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     try {
-      // Upload foto ke ImgBB jika masih data URL (base64)
-      if (newData.photo && typeof newData.photo === 'string' && newData.photo.startsWith('data:')) {
+      // Upload semua foto ke ImgBB jika masih data URL
+      if (newData.photos && newData.photos.length) {
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Upload foto...';
+        const uploaded = [];
+        for (let i = 0; i < newData.photos.length; i++) {
+          let p = newData.photos[i];
+          if (typeof p === 'string' && p.startsWith('data:')) {
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Upload foto ' + (i+1) + '/' + newData.photos.length;
+            p = await uploadToImgBB(p);
+          }
+          uploaded.push(p);
+        }
+        newData.photos = uploaded;
+        newData.photo = uploaded[0] || null;
+      } else if (newData.photo && typeof newData.photo === 'string' && newData.photo.startsWith('data:')) {
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Upload foto...';
         newData.photo = await uploadToImgBB(newData.photo);
+        newData.photos = [newData.photo];
       }
       
       // Server-side edit limit check should be in Cloud Function
