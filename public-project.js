@@ -51,14 +51,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     if (data.message) qs.set('message', data.message);
 
-    // Foto: jangan taruh base64 di URL (terlalu panjang).
-    // Simpan ke sessionStorage, template akan ambil dari situ.
-    if (data.photo) {
+    // Foto single + multi
+    if (Array.isArray(data.photos) && data.photos.length > 1) {
+      try {
+        sessionStorage.setItem('uk_photos_' + code, JSON.stringify(data.photos));
+        qs.set('photosKey', 'uk_photos_' + code);
+        sessionStorage.setItem('uk_photo_' + code, data.photos[0]);
+        qs.set('photoKey', 'uk_photo_' + code);
+      } catch (e) {
+        console.warn('Gagal simpan multi-foto', e);
+      }
+    } else if (data.photo) {
       try {
         sessionStorage.setItem('uk_photo_' + code, data.photo);
         qs.set('photoKey', 'uk_photo_' + code);
       } catch (e) {
-        // sessionStorage penuh / gagal → skip foto
         console.warn('Gagal simpan foto ke sessionStorage', e);
       }
     }

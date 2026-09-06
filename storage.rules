@@ -7,7 +7,7 @@ service firebase.storage {
     }
 
     function isAdmin() {
-      return isSignedIn() && request.auth.token.email == 'raffliraffli649@gmail.com';
+      return isSignedIn() && request.auth.token.email == 'untukkamuu521@gmail.com';
     }
 
     // Bukti top up - user hanya upload ke folder miliknya

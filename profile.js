@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // ===== ADMIN BUTTON — paksa tampil jika email cocok =====
   const email = (user.email || '').trim().toLowerCase();
-  const adminEmail = (typeof ADMIN_EMAIL !== 'undefined' ? ADMIN_EMAIL : 'raffliraffli649@gmail.com').trim().toLowerCase();
+  const adminEmail = (typeof ADMIN_EMAIL !== 'undefined' ? ADMIN_EMAIL : 'untukkamuu521@gmail.com').trim().toLowerCase();
   
   const adminBtn = document.querySelector('a.admin-only, .admin-only');
   if (adminBtn) {

@@ -1,6 +1,7 @@
+const WA_NUMBER = '6285842728134';
 // Nomor WhatsApp admin (format internasional tanpa +)
 // GANTI dengan nomor WhatsApp kamu yang aktif
-const ADMIN_WA = '628xxxxxxxxxx'; // <-- GANTI NOMOR INI
+const ADMIN_WA = '6285842728134';
 
 document.addEventListener('DOMContentLoaded', async () => {
   const user = await requireAuth();

@@ -8,7 +8,7 @@ Marketplace template digital (nembak, ulang tahun, wisuda, dll) dengan sistem sa
 - Katalog template gratis & berbayar
 - Editor project (teks, foto, warna) + live preview
 - Sistem saldo real-time + Top Up QRIS + upload bukti TF (tanpa WhatsApp)
-- Panel Admin **hanya** untuk `raffliraffli649@gmail.com`
+- Panel Admin **hanya** untuk `untukkamuu521@gmail.com`
   - Isi saldo user
   - Lihat bukti TF (gambar)
   - Galeri foto project
