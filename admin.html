@@ -71,9 +71,11 @@
         <!-- Tabs -->
         <div class="flex gap-1 mb-3 flex-wrap">
           <button class="btn btn-primary btn-sm admin-tab active" data-tab="topups">Top Up</button>
+          <button class="btn btn-secondary btn-sm admin-tab" data-tab="bukti">Bukti TF</button>
           <button class="btn btn-secondary btn-sm admin-tab" data-tab="users">Users</button>
           <button class="btn btn-secondary btn-sm admin-tab" data-tab="templates">Templates</button>
           <button class="btn btn-secondary btn-sm admin-tab" data-tab="projects">Projects</button>
+          <button class="btn btn-secondary btn-sm admin-tab" data-tab="gallery">Galeri Foto</button>
         </div>
         
         <!-- Top Ups -->
@@ -109,6 +111,13 @@
           </div>
         </div>
         
+        <div id="tab-bukti" class="hidden">
+          <h2 class="mb-2"><i class="fa-solid fa-receipt"></i> Bukti TF / Testimoni</h2>
+          <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1rem;">Semua bukti transfer tampil sebagai gambar. Pagination 10 per halaman.</p>
+          <div id="buktiGrid" class="grid grid-2"></div>
+          <div id="buktiPager" class="flex gap-1 justify-center mt-2"></div>
+        </div>
+
         <!-- Users -->
         <div id="tab-users" class="hidden">
           <h2 class="mb-2">Daftar User</h2>
@@ -206,6 +215,12 @@
               </tbody>
             </table>
           </div>
+        </div>
+        <div id="tab-gallery" class="hidden">
+          <h2 class="mb-2"><i class="fa-solid fa-images"></i> Galeri Foto Project</h2>
+          <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1rem;">Foto yang diupload user di editor, pagination 10 per halaman.</p>
+          <div id="galleryGrid" class="grid grid-2"></div>
+          <div id="galleryPager" class="flex gap-1 justify-center mt-2"></div>
         </div>
       </div>
     </div>

@@ -19,10 +19,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       tab.classList.add('active', 'btn-primary');
       tab.classList.remove('btn-secondary');
       
-      ['topups', 'users', 'templates', 'projects'].forEach(id => {
-        document.getElementById('tab-' + id).classList.add('hidden');
+      ['topups', 'bukti', 'users', 'templates', 'projects', 'gallery'].forEach(id => {
+        const pane = document.getElementById('tab-' + id);
+        if (pane) pane.classList.add('hidden');
       });
-      document.getElementById('tab-' + tab.dataset.tab).classList.remove('hidden');
+      const shown = document.getElementById('tab-' + tab.dataset.tab);
+      if (shown) shown.classList.remove('hidden');
+      if (tab.dataset.tab === 'bukti') loadBukti(1);
+      if (tab.dataset.tab === 'gallery') loadGallery(1);
     });
   });
   
@@ -337,9 +341,14 @@ async function loadAdminProducts() {
           <span class="template-price">${p.isFree || p.price === 0 ? 'Gratis' : formatRupiah(p.price)}</span>
           ${p.featured ? '<span style="font-size:0.75rem;color:var(--pink);">Beranda</span>' : ''}
         </div>
-        <button class="btn btn-secondary btn-sm w-full deactivate-product" data-id="${p.id}">
-          <i class="fa-solid fa-eye-slash"></i> Nonaktifkan
-        </button>
+        <div class="flex gap-1">
+          <a class="btn btn-primary btn-sm w-full" href="detail.html?id=${p.id}">
+            <i class="fa-solid fa-eye"></i> Lihat Detail
+          </a>
+          <button class="btn btn-secondary btn-sm deactivate-product" data-id="${p.id}">
+            <i class="fa-solid fa-eye-slash"></i>
+          </button>
+        </div>
       </div>
     </article>
   `).join('');
@@ -413,7 +422,82 @@ function initProductAdmin() {
   });
 }
 
-// Hook into existing admin init if possible
+async function loadBukti(page) {
+  const grid = document.getElementById('buktiGrid');
+  const pager = document.getElementById('buktiPager');
+  if (!grid || !db) return;
+  try {
+    const snap = await db.collection('topups').orderBy('createdAt', 'desc').limit(100).get();
+    const items = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(t => t.buktiUrl || t.proofURL);
+    const per = 10;
+    const start = (page - 1) * per;
+    const slice = items.slice(start, start + per);
+    if (!slice.length) {
+      grid.innerHTML = '<p style="color:var(--text-muted);">Belum ada bukti transfer.</p>';
+      if (pager) pager.innerHTML = '';
+      return;
+    }
+    grid.innerHTML = slice.map(t => {
+      const img = t.buktiUrl || t.proofURL;
+      const time = t.createdAt ? new Date(t.createdAt.seconds * 1000).toLocaleString('id-ID') : '-';
+      return `<article class="card" style="padding:0.8rem;">
+        <a href="${img}" target="_blank"><img src="${img}" alt="Bukti" style="width:100%;height:180px;object-fit:cover;border-radius:12px;"></a>
+        <div style="margin-top:0.6rem;font-weight:600;word-break:break-all;">${t.email || '-'}</div>
+        <div style="color:var(--pink);font-weight:700;">${formatRupiah(t.nominal || 0)}</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);">${time} · ${t.status || 'PENDING'}</div>
+      </article>`;
+    }).join('');
+    const pages = Math.ceil(items.length / per);
+    pager.innerHTML = Array.from({ length: pages }, (_, i) =>
+      `<button class="btn ${i + 1 === page ? 'btn-primary' : 'btn-secondary'} btn-sm" data-p="${i + 1}">${i + 1}</button>`
+    ).join('');
+    pager.querySelectorAll('button').forEach(b => b.addEventListener('click', () => loadBukti(parseInt(b.dataset.p, 10))));
+  } catch (e) {
+    grid.innerHTML = '<p>Error: ' + e.message + '</p>';
+  }
+}
+
+async function loadGallery(page) {
+  const grid = document.getElementById('galleryGrid');
+  const pager = document.getElementById('galleryPager');
+  if (!grid || !db) return;
+  try {
+    const snap = await db.collection('projects').orderBy('createdAt', 'desc').limit(80).get();
+    const photos = [];
+    snap.docs.forEach(doc => {
+      const p = doc.data();
+      const fields = p.data || p;
+      const urls = [];
+      ['photo', 'photoUrl', 'image', 'imageUrl', 'logo', 'background'].forEach(k => {
+        if (typeof fields[k] === 'string' && fields[k].startsWith('http')) urls.push(fields[k]);
+      });
+      if (Array.isArray(fields.photos)) fields.photos.forEach(u => { if (u) urls.push(u); });
+      urls.forEach(url => photos.push({ url, code: p.code, email: p.ownerEmail, name: p.name }));
+    });
+    const per = 10;
+    const start = (page - 1) * per;
+    const slice = photos.slice(start, start + per);
+    if (!slice.length) {
+      grid.innerHTML = '<p style="color:var(--text-muted);">Belum ada foto project.</p>';
+      if (pager) pager.innerHTML = '';
+      return;
+    }
+    grid.innerHTML = slice.map(ph => `
+      <article class="card" style="padding:0.8rem;">
+        <a href="${ph.url}" target="_blank"><img src="${ph.url}" alt="" style="width:100%;height:180px;object-fit:cover;border-radius:12px;"></a>
+        <div style="margin-top:0.5rem;font-weight:600;">${ph.name || ph.code || '-'}</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);word-break:break-all;">${ph.email || ''}</div>
+      </article>`).join('');
+    const pages = Math.max(1, Math.ceil(photos.length / per));
+    pager.innerHTML = Array.from({ length: pages }, (_, i) =>
+      `<button class="btn ${i + 1 === page ? 'btn-primary' : 'btn-secondary'} btn-sm" data-p="${i + 1}">${i + 1}</button>`
+    ).join('');
+    pager.querySelectorAll('button').forEach(b => b.addEventListener('click', () => loadGallery(parseInt(b.dataset.p, 10))));
+  } catch (e) {
+    grid.innerHTML = '<p>Error: ' + e.message + '</p>';
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(initProductAdmin, 500);
 });
