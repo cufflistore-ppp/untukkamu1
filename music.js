@@ -34,11 +34,211 @@ const TEMPLATE_MUSIC = {
     id: 'letter-calm',
     title: 'Quiet Letter',
     url: 'https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3?filename=relaxing-145038.mp3'
+  },
+  'cinta-romantis': {
+    id: 'deep-romance',
+    title: 'Deep Romance',
+    url: 'https://cdn.pixabay.com/download/audio/2021/11/25/audio_91740cf291.mp3?filename=sweet-love-121597.mp3'
+  },
+  'valentine': {
+    id: 'valentine-hearts',
+    title: 'Valentine Hearts',
+    url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=soft-background-music-40839.mp3'
+  },
+  'anniversary': {
+    id: 'anniversary-soft',
+    title: 'Years Together',
+    url: 'https://cdn.pixabay.com/download/audio/2022/10/25/audio_191aa2c0b5.mp3?filename=inspiring-cinematic-ambient-116199.mp3'
+  },
+  'wisuda': {
+    id: 'graduation-proud',
+    title: 'Proud Moment',
+    url: 'https://cdn.pixabay.com/download/audio/2022/03/24/audio_cda105851b.mp3?filename=happy-birthday-to-you-15487.mp3'
+  },
+  'maaf': {
+    id: 'sorry-gentle',
+    title: 'Gentle Apology',
+    url: 'https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3?filename=relaxing-145038.mp3'
+  },
+  'terima-kasih': {
+    id: 'thank-you-warm',
+    title: 'Warm Thanks',
+    url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=soft-background-music-40839.mp3'
+  },
+  'untuk-pacar': {
+    id: 'untuk-pacar-track',
+    title: 'Sweet For You',
+    url: 'https://cdn.pixabay.com/download/audio/2021/11/25/audio_91740cf291.mp3?filename=sweet-love-121597.mp3'
+  },
+  'pesan-cinta': {
+    id: 'pesan-cinta-track',
+    title: 'Love Note',
+    url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=soft-background-music-40839.mp3'
+  },
+  'rindu': {
+    id: 'rindu-track',
+    title: 'Missing You',
+    url: 'https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3?filename=relaxing-145038.mp3'
+  },
+  'jadian': {
+    id: 'jadian-track',
+    title: 'Together Day',
+    url: 'https://cdn.pixabay.com/download/audio/2022/10/25/audio_191aa2c0b5.mp3?filename=inspiring-cinematic-ambient-116199.mp3'
+  },
+  'ldt': {
+    id: 'ldt-track',
+    title: 'Distance Love',
+    url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=soft-background-music-40839.mp3'
+  },
+  'good-night': {
+    id: 'good-night-track',
+    title: 'Night Soft',
+    url: 'https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3?filename=relaxing-145038.mp3'
+  },
+  'good-morning': {
+    id: 'good-morning-track',
+    title: 'Morning Light',
+    url: 'https://cdn.pixabay.com/download/audio/2022/03/24/audio_cda105851b.mp3?filename=happy-birthday-to-you-15487.mp3'
+  },
+  'proposal': {
+    id: 'proposal-track',
+    title: 'Will You',
+    url: 'https://cdn.pixabay.com/download/audio/2021/11/25/audio_91740cf291.mp3?filename=sweet-love-121597.mp3'
+  },
+  'untuk-sahabat': {
+    id: 'untuk-sahabat-track',
+    title: 'True Friend',
+    url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=soft-background-music-40839.mp3'
+  },
+  'bestie': {
+    id: 'bestie-track',
+    title: 'Bestie Vibes',
+    url: 'https://cdn.pixabay.com/download/audio/2022/03/24/audio_cda105851b.mp3?filename=happy-birthday-to-you-15487.mp3'
+  },
+  'bestod': {
+    id: 'bestod-track',
+    title: 'Bro Bond',
+    url: 'https://cdn.pixabay.com/download/audio/2022/10/25/audio_191aa2c0b5.mp3?filename=inspiring-cinematic-ambient-116199.mp3'
+  },
+  'teman-sekolah': {
+    id: 'teman-sekolah-track',
+    title: 'School Days',
+    url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=soft-background-music-40839.mp3'
+  },
+  'teman-kerja': {
+    id: 'teman-kerja-track',
+    title: 'Work Mate',
+    url: 'https://cdn.pixabay.com/download/audio/2022/10/25/audio_191aa2c0b5.mp3?filename=inspiring-cinematic-ambient-116199.mp3'
+  },
+  'circle': {
+    id: 'circle-track',
+    title: 'Our Circle',
+    url: 'https://cdn.pixabay.com/download/audio/2022/03/24/audio_cda105851b.mp3?filename=happy-birthday-to-you-15487.mp3'
+  },
+  'teman-jauh': {
+    id: 'teman-jauh-track',
+    title: 'Far Friend',
+    url: 'https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3?filename=relaxing-145038.mp3'
+  },
+  'teman-baru': {
+    id: 'teman-baru-track',
+    title: 'New Friend',
+    url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=soft-background-music-40839.mp3'
+  },
+  'selamat-ulang-tahun-sahabat': {
+    id: 'selamat-ulang-tahun-sahabat-track',
+    title: 'Birthday Friend',
+    url: 'https://cdn.pixabay.com/download/audio/2022/03/24/audio_cda105851b.mp3?filename=happy-birthday-to-you-15487.mp3'
+  },
+  'selamat-ulang-tahun-pacar': {
+    id: 'selamat-ulang-tahun-pacar-track',
+    title: 'Birthday Love',
+    url: 'https://cdn.pixabay.com/download/audio/2021/11/25/audio_91740cf291.mp3?filename=sweet-love-121597.mp3'
+  },
+  'selamat-wisuda-sahabat': {
+    id: 'selamat-wisuda-sahabat-track',
+    title: 'Grad Friend',
+    url: 'https://cdn.pixabay.com/download/audio/2022/10/25/audio_191aa2c0b5.mp3?filename=inspiring-cinematic-ambient-116199.mp3'
+  },
+  'semangat': {
+    id: 'semangat-track',
+    title: 'Cheer Up',
+    url: 'https://cdn.pixabay.com/download/audio/2022/10/25/audio_191aa2c0b5.mp3?filename=inspiring-cinematic-ambient-116199.mp3'
+  },
+  'bangga': {
+    id: 'bangga-track',
+    title: 'Proud Of You',
+    url: 'https://cdn.pixabay.com/download/audio/2022/10/25/audio_191aa2c0b5.mp3?filename=inspiring-cinematic-ambient-116199.mp3'
+  },
+  'dukungan': {
+    id: 'dukungan-track',
+    title: 'I Got You',
+    url: 'https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3?filename=relaxing-145038.mp3'
+  },
+  'miss-you': {
+    id: 'miss-you-track',
+    title: 'Miss You',
+    url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=soft-background-music-40839.mp3'
+  },
+  'just-because': {
+    id: 'just-because-track',
+    title: 'Just Because',
+    url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=soft-background-music-40839.mp3'
+  },
+  'salam-kenal': {
+    id: 'salam-kenal-track',
+    title: 'Nice To Meet',
+    url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=soft-background-music-40839.mp3'
+  },
+  'teman-lama': {
+    id: 'teman-lama-track',
+    title: 'Old Friend',
+    url: 'https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3?filename=relaxing-145038.mp3'
+  },
+  'crush': {
+    id: 'crush-track',
+    title: 'Crush Soft',
+    url: 'https://cdn.pixabay.com/download/audio/2021/11/25/audio_91740cf291.mp3?filename=sweet-love-121597.mp3'
+  },
+  'mantan-baik': {
+    id: 'mantan-baik-track',
+    title: 'Peaceful Close',
+    url: 'https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3?filename=relaxing-145038.mp3'
+  },
+  'keluarga': {
+    id: 'keluarga-track',
+    title: 'Family Warm',
+    url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=soft-background-music-40839.mp3'
+  },
+  'orang-tua': {
+    id: 'orang-tua-track',
+    title: 'Parents Love',
+    url: 'https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3?filename=relaxing-145038.mp3'
   }
 };
 
-function getMusicForTemplate(templateId) {
-  return TEMPLATE_MUSIC[templateId] || TEMPLATE_MUSIC['untuk-kamu'];
+const CATEGORY_MUSIC = {
+  romance: { id: 'cat-romance', title: 'Romance Soft', url: 'https://cdn.pixabay.com/download/audio/2021/11/25/audio_91740cf291.mp3?filename=sweet-love-121597.mp3' },
+  friendship: { id: 'cat-friend', title: 'Friendship Warm', url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=soft-background-music-40839.mp3' },
+  personal: { id: 'cat-personal', title: 'Soft Personal', url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=soft-background-music-40839.mp3' },
+  celebration: { id: 'cat-celeb', title: 'Celebration', url: 'https://cdn.pixabay.com/download/audio/2022/03/24/audio_cda105851b.mp3?filename=happy-birthday-to-you-15487.mp3' },
+  letter: { id: 'cat-letter', title: 'Quiet Letter', url: 'https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3?filename=relaxing-145038.mp3' },
+  family: { id: 'cat-family', title: 'Family Warm', url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=soft-background-music-40839.mp3' },
+  holiday: { id: 'cat-holiday', title: 'Holiday Mood', url: 'https://cdn.pixabay.com/download/audio/2022/10/25/audio_191aa2c0b5.mp3?filename=inspiring-cinematic-ambient-116199.mp3' }
+};
+
+function getMusicForTemplate(templateId, category) {
+  if (TEMPLATE_MUSIC[templateId]) return TEMPLATE_MUSIC[templateId];
+  if (category && CATEGORY_MUSIC[category]) return CATEGORY_MUSIC[category];
+  // tebak dari nama id
+  const id = String(templateId || '');
+  if (/pacar|cinta|valentine|crush|rindu|sayang|anniversary|jadian|ldt|proposal/.test(id)) return CATEGORY_MUSIC.romance;
+  if (/sahabat|bestie|bestod|bros|teman|circle|friend/.test(id)) return CATEGORY_MUSIC.friendship;
+  if (/ibu|ayah|keluarga|anak|sepupu/.test(id)) return CATEGORY_MUSIC.family;
+  if (/idul|natal|tahun-baru|imlek|kemerdekaan|kartini|halloween/.test(id)) return CATEGORY_MUSIC.holiday;
+  if (/ultah|wisuda|guru|lulus|ujian/.test(id)) return CATEGORY_MUSIC.celebration;
+  if (/surat|puisi|doa|pesan|letter/.test(id)) return CATEGORY_MUSIC.letter;
+  return TEMPLATE_MUSIC['untuk-kamu'] || CATEGORY_MUSIC.personal;
 }
 
 /**

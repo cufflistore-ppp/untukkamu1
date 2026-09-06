@@ -67,6 +67,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('photoPreviewBox').classList.remove('hidden');
   }
 
+  // Video field untuk template premium (hasVideo / harga tinggi)
+  const videoSection = document.getElementById('videoSection');
+  const videoInput = document.getElementById('editVideoUrl');
+  const isVideoTpl = !!(project.hasVideo || (project.price && project.price >= 15000) || /video|premium/i.test(project.templateId || ''));
+  if (videoSection && isVideoTpl) {
+    videoSection.classList.remove('hidden');
+    if (videoInput && data.videoUrl) videoInput.value = data.videoUrl;
+  }
+  if (videoInput) videoInput.addEventListener('input', updatePreview);
+
   // Musik status UI
   const track = typeof getMusicForTemplate === 'function'
     ? getMusicForTemplate(project.templateId || 'untuk-kamu')
@@ -210,10 +220,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }
     
+    const hexEl = document.getElementById('colorHex');
+    const pickerEl = document.getElementById('colorPicker');
     const activeSwatch = document.querySelector('.color-swatch.active');
-    if (activeSwatch && activeSwatch.dataset.color) {
-      qs.set('color', activeSwatch.dataset.color);
-    }
+    const themeColor = (hexEl && hexEl.value) || (pickerEl && pickerEl.value) || (activeSwatch && activeSwatch.dataset.color) || '';
+    if (themeColor) qs.set('color', themeColor);
+
+    const vidEl = document.getElementById('editVideoUrl');
+    if (vidEl && vidEl.value.trim()) qs.set('video', vidEl.value.trim());
     
     if (!project.isFree) qs.set('hideBranding', '1');
     if (project.musicEnabled && track) {
@@ -266,18 +280,61 @@ document.addEventListener('DOMContentLoaded', async () => {
     updatePreview();
   });
   
-  // Color swatches
+  function setThemeColor(hex) {
+    if (!hex) return;
+    if (!hex.startsWith('#')) hex = '#' + hex;
+    if (!/^#[0-9A-Fa-f]{6}$/.test(hex) && !/^#[0-9A-Fa-f]{3}$/.test(hex)) return;
+    const picker = document.getElementById('colorPicker');
+    const hexInput = document.getElementById('colorHex');
+    if (picker) picker.value = hex.length === 4
+      ? '#' + hex[1]+hex[1]+hex[2]+hex[2]+hex[3]+hex[3]
+      : hex;
+    if (hexInput) hexInput.value = picker ? picker.value : hex;
+    document.querySelectorAll('.color-swatch').forEach(s => {
+      s.classList.toggle('active', (s.dataset.color || '').toLowerCase() === (picker ? picker.value : hex).toLowerCase());
+    });
+    updatePreview();
+  }
+
+  if (data.themeColor) setThemeColor(data.themeColor);
+
   document.querySelectorAll('.color-swatch').forEach(sw => {
     sw.addEventListener('click', () => {
-      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
-      sw.classList.add('active');
+      setThemeColor(sw.dataset.color);
     });
   });
+
+  const colorPicker = document.getElementById('colorPicker');
+  const colorHex = document.getElementById('colorHex');
+  if (colorPicker) {
+    colorPicker.addEventListener('input', () => setThemeColor(colorPicker.value));
+  }
+  if (colorHex) {
+    colorHex.addEventListener('change', () => setThemeColor(colorHex.value.trim()));
+    colorHex.addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') setThemeColor(colorHex.value.trim());
+    });
+  }
   
-  // Preview button
-  document.getElementById('previewBtn').addEventListener('click', () => {
-    window.open(`p.html?code=${code}`, '_blank');
-  });
+  const previewBtn = document.getElementById('previewBtn');
+  if (previewBtn) {
+    previewBtn.addEventListener('click', () => {
+      window.open(`p.html?code=${code}`, '_blank');
+    });
+  }
+
+  const copyLinkBtn = document.getElementById('copyLinkBtn');
+  if (copyLinkBtn) {
+    copyLinkBtn.addEventListener('click', async () => {
+      const link = location.origin + location.pathname.replace(/[^/]*$/, '') + 'p.html?code=' + code;
+      try {
+        await navigator.clipboard.writeText(link);
+        showToast('Link berhasil disalin!', 'success');
+      } catch (e) {
+        prompt('Salin link ini:', link);
+      }
+    });
+  }
   
   // Save
   document.getElementById('saveBtn').addEventListener('click', async () => {
@@ -290,15 +347,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     btn.disabled = true;
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
     
+    const hexEl = document.getElementById('colorHex');
+    const pickerEl = document.getElementById('colorPicker');
     const activeSwatch = document.querySelector('.color-swatch.active');
-    const themeColor = activeSwatch ? (activeSwatch.dataset.color || activeSwatch.style.backgroundColor || '') : '';
+    const themeColor = (hexEl && hexEl.value) || (pickerEl && pickerEl.value) || (activeSwatch && activeSwatch.dataset.color) || '';
     
+    const vidEl = document.getElementById('editVideoUrl');
     const newData = {
       title: document.getElementById('editTitle').value,
       name: document.getElementById('editName').value,
       message: document.getElementById('editMessage').value,
       photo: photoDataUrl || null,
-      themeColor: themeColor || null
+      themeColor: themeColor || null,
+      videoUrl: (vidEl && vidEl.value.trim()) || null
     };
     
     if (!db || !project.id) {

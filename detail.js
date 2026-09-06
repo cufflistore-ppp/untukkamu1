@@ -1,5 +1,47 @@
 // Reuse sample templates
 const SAMPLE_TEMPLATES = {
+  'cinta-romantis': {
+    id: 'cinta-romantis', name: 'Cinta Romantis',
+    description: 'Template percintaan elegan dengan foto, pesan hati, dan aksen merah muda.',
+    price: 5000, isFree: false,
+    thumbnail: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=800&q=80',
+    maxEdits: 2, features: ['Foto', 'Nama', 'Pesan cinta', 'Warna tema', 'Animasi soft']
+  },
+  'valentine': {
+    id: 'valentine', name: 'Valentine',
+    description: 'Ucapan Valentine manis dengan hati, foto, dan pesan spesial.',
+    price: 5000, isFree: false,
+    thumbnail: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=800&q=80',
+    maxEdits: 2, features: ['Foto', 'Nama', 'Pesan', 'Tema valentine', 'Warna tema']
+  },
+  'anniversary': {
+    id: 'anniversary', name: 'Anniversary',
+    description: 'Rayakan hari jadi hubungan dengan template elegan.',
+    price: 8000, isFree: false,
+    thumbnail: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=800&q=80',
+    maxEdits: 2, features: ['Foto', 'Nama pasangan', 'Pesan', 'Warna tema']
+  },
+  'wisuda': {
+    id: 'wisuda', name: 'Wisuda',
+    description: 'Ucapan selamat wisuda dengan foto dan pesan motivasi.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80',
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan', 'Warna tema']
+  },
+  'maaf': {
+    id: 'maaf', name: 'Permintaan Maaf',
+    description: 'Surat maaf yang tulus untuk memperbaiki hubungan.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1455390580327-9a4658c1d3d5?w=800&q=80',
+    maxEdits: 999, features: ['Judul', 'Pesan maaf', 'Nama', 'Warna lembut']
+  },
+  'terima-kasih': {
+    id: 'terima-kasih', name: 'Terima Kasih',
+    description: 'Ucapan terima kasih elegan untuk orang spesial.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=800&q=80',
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan terima kasih', 'Warna tema']
+  },
   'untuk-kamu': {
     id: 'untuk-kamu', name: 'Untuk Kamu',
     description: 'Template personal elegan dengan foto, pesan, nama penerima, dan animasi lembut. Cocok untuk memberikan sesuatu yang spesial.',
@@ -34,6 +76,216 @@ const SAMPLE_TEMPLATES = {
     price: 0, isFree: true,
     thumbnail: 'https://images.unsplash.com/photo-1455390580327-9a4658c1d3d5?w=800&q=80',
     maxEdits: 999, features: ['Judul', 'Isi surat', 'Pengirim', 'Penerima', 'Warna kertas']
+  },
+  'untuk-pacar': {
+    id: 'untuk-pacar', name: 'Untuk Pacar',
+    description: 'Pesan manis spesial hanya untuk pacarmu.',
+    price: 5000, isFree: false,
+    thumbnail: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 2, features: ['Foto', 'Nama', 'Pesan cinta', 'Warna']
+  },
+  'pesan-cinta': {
+    id: 'pesan-cinta', name: 'Pesan Cinta',
+    description: 'Surat cinta digital yang romantis dan elegan.',
+    price: 5000, isFree: false,
+    thumbnail: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 2, features: ['Foto', 'Judul', 'Pesan', 'Warna']
+  },
+  'rindu': {
+    id: 'rindu', name: 'Rindu',
+    description: 'Sampaikan rasa rindu untuk orang yang jauh.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan rindu', 'Warna']
+  },
+  'jadian': {
+    id: 'jadian', name: 'Hari Jadian',
+    description: 'Rayakan tanggal jadian kalian berdua.',
+    price: 8000, isFree: false,
+    thumbnail: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 2, features: ['Foto', 'Nama', 'Tanggal', 'Pesan', 'Warna']
+  },
+  'ldt': {
+    id: 'ldt', name: 'Long Distance',
+    description: 'Untuk pasangan LDR yang tetap setia.',
+    price: 5000, isFree: false,
+    thumbnail: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 2, features: ['Foto', 'Nama', 'Pesan', 'Warna']
+  },
+  'good-night': {
+    id: 'good-night', name: 'Selamat Malam',
+    description: 'Ucapan selamat malam manis sebelum tidur.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan', 'Warna']
+  },
+  'good-morning': {
+    id: 'good-morning', name: 'Selamat Pagi',
+    description: 'Sapa pagi yang hangat untuk orang spesial.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan', 'Warna']
+  },
+  'proposal': {
+    id: 'proposal', name: 'Proposal',
+    description: 'Pernyataan perasaan / ajakan serius yang berkesan.',
+    price: 10000, isFree: false,
+    thumbnail: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 2, features: ['Foto', 'Nama', 'Pesan', 'Tombol', 'Warna']
+  },
+  'untuk-sahabat': {
+    id: 'untuk-sahabat', name: 'Untuk Sahabat',
+    description: 'Untuk sahabat yang selalu ada di sisi.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan', 'Warna']
+  },
+  'bestie': {
+    id: 'bestie', name: 'Bestie',
+    description: 'Spesial buat bestie yang paling ngerti kamu.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan', 'Warna']
+  },
+  'bestod': {
+    id: 'bestod', name: 'Bestod / Bros',
+    description: 'Buat bestod / sobat cowok yang solid.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan', 'Warna']
+  },
+  'teman-sekolah': {
+    id: 'teman-sekolah', name: 'Teman Sekolah',
+    description: 'Nostalgia & ucapan untuk teman sekolah.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan', 'Warna']
+  },
+  'teman-kerja': {
+    id: 'teman-kerja', name: 'Teman Kerja',
+    description: 'Apresiasi untuk rekan kerja yang suportif.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan', 'Warna']
+  },
+  'circle': {
+    id: 'circle', name: 'Circle / Geng',
+    description: 'Buat circle sahabat yang solid banget.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan', 'Warna']
+  },
+  'teman-jauh': {
+    id: 'teman-jauh', name: 'Teman Jauh',
+    description: 'Untuk teman yang jauh secara jarak, dekat di hati.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan', 'Warna']
+  },
+  'teman-baru': {
+    id: 'teman-baru', name: 'Teman Baru',
+    description: 'Sambutan hangat untuk teman baru.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan', 'Warna']
+  },
+  'selamat-ulang-tahun-sahabat': {
+    id: 'selamat-ulang-tahun-sahabat', name: 'Ultah Sahabat',
+    description: 'Ulang tahun spesial buat sahabat/bestie.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1464349153735-7db55fd30e4e?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan', 'Warna']
+  },
+  'selamat-ulang-tahun-pacar': {
+    id: 'selamat-ulang-tahun-pacar', name: 'Ultah Pacar',
+    description: 'Ulang tahun romantis untuk pacar.',
+    price: 5000, isFree: false,
+    thumbnail: 'https://images.unsplash.com/photo-1464349153735-7db55fd30e4e?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 2, features: ['Foto', 'Nama', 'Pesan', 'Warna']
+  },
+  'selamat-wisuda-sahabat': {
+    id: 'selamat-wisuda-sahabat', name: 'Wisuda Sahabat',
+    description: 'Ucapan wisuda untuk sahabat yang berjuang.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1464349153735-7db55fd30e4e?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan', 'Warna']
+  },
+  'semangat': {
+    id: 'semangat', name: 'Semangat!',
+    description: 'Dorongan semangat untuk orang yang kamu sayang.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan', 'Warna']
+  },
+  'bangga': {
+    id: 'bangga', name: 'Aku Bangga',
+    description: 'Sampaikan rasa bangga pada seseorang.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan', 'Warna']
+  },
+  'dukungan': {
+    id: 'dukungan', name: 'Dukungan',
+    description: 'Pesan dukungan di masa sulit.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan', 'Warna']
+  },
+  'miss-you': {
+    id: 'miss-you', name: 'Miss You',
+    description: 'Sampaikan \'kangen\' dengan cara manis.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan', 'Warna']
+  },
+  'just-because': {
+    id: 'just-because', name: 'Just Because',
+    description: 'Kirim sesuatu manis tanpa alasan khusus.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan', 'Warna']
+  },
+  'salam-kenal': {
+    id: 'salam-kenal', name: 'Salam Kenal',
+    description: 'Perkenalan manis untuk orang yang baru dikenal.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan', 'Warna']
+  },
+  'teman-lama': {
+    id: 'teman-lama', name: 'Teman Lama',
+    description: 'Reuni perasaan untuk teman lama.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan', 'Warna']
+  },
+  'crush': {
+    id: 'crush', name: 'Untuk Crush',
+    description: 'Pesan lembut untuk orang yang kamu sukai diam-diam.',
+    price: 5000, isFree: false,
+    thumbnail: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 2, features: ['Foto', 'Nama', 'Pesan', 'Warna']
+  },
+  'mantan-baik': {
+    id: 'mantan-baik', name: 'Damai dengan Masa Lalu',
+    description: 'Pesan dewasa untuk menutup bab lama dengan baik.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1455390580327-9a4658c1d3d5?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 999, features: ['Judul', 'Pesan', 'Nama', 'Warna']
+  },
+  'keluarga': {
+    id: 'keluarga', name: 'Untuk Keluarga',
+    description: 'Pesan hangat untuk keluarga tercinta.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan', 'Warna']
+  },
+  'orang-tua': {
+    id: 'orang-tua', name: 'Untuk Orang Tua',
+    description: 'Ucapan syukur untuk ayah/ibu.',
+    price: 0, isFree: true,
+    thumbnail: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&q=80'.replace('w=600','w=800'),
+    maxEdits: 999, features: ['Foto', 'Nama', 'Pesan', 'Warna']
   }
 };
 
@@ -41,7 +293,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
   
-  if (!id || !SAMPLE_TEMPLATES[id]) {
+  let fromDb = null;
+  if (typeof getProducts === 'function') {
+    try {
+      const list = await getProducts();
+      fromDb = (list || []).find(p => p.id === id) || null;
+    } catch (e) {}
+  }
+
+  if (!id || (!SAMPLE_TEMPLATES[id] && !fromDb)) {
     document.getElementById('detailContent').innerHTML = `
       <div class="empty-state" style="grid-column: 1/-1;">
         <i class="fa-solid fa-circle-info"></i>
@@ -52,7 +312,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
   
-  const t = SAMPLE_TEMPLATES[id];
+  const t = SAMPLE_TEMPLATES[id] || fromDb;
+  if (!Array.isArray(t.features)) t.features = t.features ? String(t.features).split(',').map(s => s.trim()) : [];
   const isFree = t.isFree || t.price === 0;
   
   document.getElementById('detailContent').innerHTML = `

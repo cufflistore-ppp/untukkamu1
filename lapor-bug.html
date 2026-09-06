@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Detail Template — 𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</title>
+  <title>Lapor Bug — Untuk Kamu</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -11,37 +11,15 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="page-loader">
-    <div class="loader-spinner"></div>
-  <script>
-  (function(){
-    try {
-      var t = localStorage.getItem('uk_theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', t);
-    } catch(e) {}
-    function h(){ var l=document.getElementById('page-loader'); if(l) l.classList.add('hidden'); }
-    if (document.readyState === 'complete' || document.readyState === 'interactive') setTimeout(h, 0);
-    document.addEventListener('DOMContentLoaded', h);
-    window.addEventListener('load', h);
-    setTimeout(h, 1500);
-  })();
-  </script>
-
-    <div class="loader-text">𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</div>
-  </div>
-
-  
-  <!-- Top Bar -->
+  <div id="page-loader"><div class="loader-spinner"></div><div class="loader-text">𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</div></div>
   <div class="top-bar">
     <div class="top-bar-left"><img src="logo.jpg" alt="Logo" class="top-bar-logo"><a href="index.html" class="top-bar-brand" data-nav>𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</a></div>
     <button class="theme-toggle" aria-label="Ganti tema"><i class="fa-solid fa-moon"></i></button>
   </div>
-
-  <!-- Bottom Navbar -->
   <nav class="navbar">
     <div class="navbar-inner">
       <div class="nav-links">
-        <a href="template.html" class="nav-link active" data-nav><i class="fa-solid fa-file"></i><span>Template</span></a>
+        <a href="template.html" class="nav-link" data-nav><i class="fa-solid fa-file"></i><span>Template</span></a>
         <a href="proyek.html" class="nav-link" data-nav><i class="fa-solid fa-folder"></i><span>Proyek</span></a>
         <a href="index.html" class="nav-link" data-nav><i class="fa-solid fa-house"></i><span>Beranda</span></a>
         <a href="about.html" class="nav-link" data-nav><i class="fa-solid fa-circle-info"></i><span>Tentang</span></a>
@@ -49,30 +27,23 @@
       </div>
     </div>
   </nav>
-
-
   <main class="page-content">
-    <div class="container">
-      <a href="template.html" class="btn btn-secondary btn-sm mb-2" data-nav>
-        <i class="fa-solid fa-arrow-left"></i> Kembali
-      </a>
-      
-      <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;" id="detailContent">
-        <!-- Loaded by JS -->
+    <div class="container" style="max-width:640px;">
+      <div class="section-title"><i class="fa-solid fa-bug"></i><h1>Lapor Bug</h1></div>
+      <p style="margin-bottom:1.2rem;color:var(--text-secondary);">Pilih platform untuk menghubungi tim. Username bisa diganti nanti di kode.</p>
+      <div class="grid" style="gap:0.8rem;">
+        <a class="btn btn-primary w-full" href="https://wa.me/6280000000000" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+        <a class="btn btn-secondary w-full" href="https://t.me/untukkamu" target="_blank" rel="noopener"><i class="fa-brands fa-telegram"></i> Telegram</a>
+        <a class="btn btn-secondary w-full" href="https://instagram.com/untukkamu" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i> Instagram</a>
+        <a class="btn btn-secondary w-full" href="https://tiktok.com/@untukkamu" target="_blank" rel="noopener"><i class="fa-brands fa-tiktok"></i> TikTok</a>
+        <a class="btn btn-secondary w-full" href="mailto:raffliraffli649@gmail.com"><i class="fa-solid fa-envelope"></i> Email</a>
       </div>
     </div>
   </main>
-
-  <footer class="footer">
-    <div class="footer-bottom">&copy; 2026 𝓤𝓷𝓽𝓾𝓴 𝓚𝓪𝓶𝓾</div>
-  </footer>
-
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js"></script>
   <script src="auth.js"></script>
-  <script src="products.js"></script>
-  <script src="detail.js"></script>
 </body>
 </html>

@@ -148,6 +148,15 @@
     } else if (params.get('photo')) {
       document.getElementById('photo').src = params.get('photo');
     }
+    
+    const color = params.get('color');
+    if (color) {
+      const photo = document.getElementById('photo');
+      const title = document.getElementById('title');
+      if (photo) { photo.style.borderColor = color; photo.style.boxShadow = '0 0 20px ' + color + '66'; }
+      if (title) title.style.color = color;
+      document.body.style.background = 'linear-gradient(135deg, ' + color + '22, #ffffff, ' + color + '33)';
+    }
     if (params.get('hideBranding') === '1') {
       const b = document.getElementById('branding');
       if (b) b.style.display = 'none';

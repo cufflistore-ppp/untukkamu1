@@ -81,17 +81,46 @@
               <button class="btn btn-danger btn-sm mt-1" id="removePhoto"><i class="fa-solid fa-trash"></i> Hapus Foto</button>
             </div>
           </div>
+
+          <div class="form-group hidden" id="videoSection">
+            <label class="form-label"><i class="fa-solid fa-video"></i> Video (Premium)</label>
+            <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.4rem;">Tempel link YouTube atau file MP4 (URL publik). Tanpa Firebase Storage.</p>
+            <input type="url" id="editVideoUrl" class="form-input" placeholder="https://youtube.com/watch?v=... atau https://....mp4">
+          </div>
           
           <div class="form-group">
-            <label class="form-label">Warna Tema</label>
-            <div class="color-picker-row">
-              <div class="color-swatch active" style="background: #7dd3fc;" data-color="#7dd3fc"></div>
-              <div class="color-swatch" style="background: #f9a8d4;" data-color="#f9a8d4"></div>
-              <div class="color-swatch" style="background: #c4b5fd;" data-color="#c4b5fd"></div>
-              <div class="color-swatch" style="background: #fbbf24;" data-color="#fbbf24"></div>
-              <div class="color-swatch" style="background: #34d399;" data-color="#34d399"></div>
-              <div class="color-swatch" style="background: #f87171;" data-color="#f87171"></div>
+            <label class="form-label">Warna Tema (pilih bebas)</label>
+            <div class="flex gap-1 items-center mb-1" style="flex-wrap:wrap;">
+              <input type="color" id="colorPicker" value="#f9a8d4" style="width:48px;height:36px;border:none;background:transparent;cursor:pointer;">
+              <input type="text" id="colorHex" class="form-input" value="#f9a8d4" placeholder="#HEX" style="flex:1;min-width:100px;font-family:monospace;">
             </div>
+            <div class="color-picker-row" id="colorPresets">
+              <div class="color-swatch active" style="background:#7dd3fc;" data-color="#7dd3fc" title="Sky"></div>
+              <div class="color-swatch" style="background:#38bdf8;" data-color="#38bdf8" title="Blue"></div>
+              <div class="color-swatch" style="background:#0ea5e9;" data-color="#0ea5e9" title="Cyan"></div>
+              <div class="color-swatch" style="background:#f9a8d4;" data-color="#f9a8d4" title="Pink"></div>
+              <div class="color-swatch" style="background:#f472b6;" data-color="#f472b6" title="Hot Pink"></div>
+              <div class="color-swatch" style="background:#ec4899;" data-color="#ec4899" title="Rose"></div>
+              <div class="color-swatch" style="background:#c4b5fd;" data-color="#c4b5fd" title="Lilac"></div>
+              <div class="color-swatch" style="background:#a78bfa;" data-color="#a78bfa" title="Violet"></div>
+              <div class="color-swatch" style="background:#8b5cf6;" data-color="#8b5cf6" title="Purple"></div>
+              <div class="color-swatch" style="background:#fbbf24;" data-color="#fbbf24" title="Gold"></div>
+              <div class="color-swatch" style="background:#f59e0b;" data-color="#f59e0b" title="Amber"></div>
+              <div class="color-swatch" style="background:#34d399;" data-color="#34d399" title="Emerald"></div>
+              <div class="color-swatch" style="background:#10b981;" data-color="#10b981" title="Green"></div>
+              <div class="color-swatch" style="background:#f87171;" data-color="#f87171" title="Coral"></div>
+              <div class="color-swatch" style="background:#ef4444;" data-color="#ef4444" title="Red"></div>
+              <div class="color-swatch" style="background:#fb923c;" data-color="#fb923c" title="Orange"></div>
+              <div class="color-swatch" style="background:#22d3ee;" data-color="#22d3ee" title="Aqua"></div>
+              <div class="color-swatch" style="background:#2dd4bf;" data-color="#2dd4bf" title="Teal"></div>
+              <div class="color-swatch" style="background:#a3e635;" data-color="#a3e635" title="Lime"></div>
+              <div class="color-swatch" style="background:#e879f9;" data-color="#e879f9" title="Fuchsia"></div>
+              <div class="color-swatch" style="background:#ffffff;" data-color="#ffffff" title="White"></div>
+              <div class="color-swatch" style="background:#94a3b8;" data-color="#94a3b8" title="Gray"></div>
+              <div class="color-swatch" style="background:#1e293b;" data-color="#1e293b" title="Slate"></div>
+              <div class="color-swatch" style="background:#000000;" data-color="#000000" title="Black"></div>
+            </div>
+            <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.4rem;">Bisa pilih preset atau color picker / ketik kode HEX bebas (semua warna).</p>
           </div>
           
           <!-- Musik -->
@@ -130,13 +159,20 @@
           </div>
 
           <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem;">
-            <i class="fa-solid fa-circle-info"></i> Perubahan langsung terlihat di preview.
+            <i class="fa-solid fa-circle-info"></i> Perubahan foto, teks, &amp; warna langsung terlihat di preview kanan.
           </p>
+          <div class="flex gap-1 mt-2" style="flex-wrap:wrap;">
+            <button type="button" class="btn btn-primary" id="saveBtn"><i class="fa-solid fa-check"></i> Simpan</button>
+            <button type="button" class="btn btn-secondary" id="previewBtn"><i class="fa-solid fa-eye"></i> Lihat Hasil</button>
+            <button type="button" class="btn btn-outline" id="copyLinkBtn"><i class="fa-solid fa-link"></i> Salin Link</button>
+          </div>
+          <p id="editCounter" style="font-size:0.8rem;color:var(--text-muted);margin-top:0.5rem;"></p>
         </div>
         
         <!-- Preview -->
         <div class="editor-preview">
-          <iframe id="previewFrame" src="about:blank"></iframe>
+          <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.4rem;"><i class="fa-solid fa-eye"></i> Live preview hasil editan</div>
+          <iframe id="previewFrame" src="about:blank" title="Preview"></iframe>
         </div>
       </div>
     </div>
