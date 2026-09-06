@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Album 3 Foto</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Inter,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+background:linear-gradient(135deg,#f472b633,#fff,#f472b622);padding:1.5rem 1rem;color:#1e293b}
+.card{background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-radius:24px;padding:1.6rem 1.3rem;max-width:440px;width:100%;
+text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.12);animation:up .7s ease}
+@keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+    .gallery { display:grid; grid-template-columns:repeat(2,1fr); gap:0.5rem; margin-bottom:1.2rem; }
+    .mp { width:100%; aspect-ratio:1; object-fit:cover; border-radius:14px;
+      border:2px solid #f472b6; box-shadow:0 4px 14px #f472b633; }
+    .mp:first-child { grid-column:1/-1; aspect-ratio:16/10; border-radius:18px; }
+.title{font-family:'Great Vibes',cursive;font-size:2.3rem;color:#f472b6;margin-bottom:.35rem}
+.recipient{font-size:1.05rem;font-weight:600;color:#64748b;margin-bottom:.9rem}
+.message{font-size:.95rem;line-height:1.7;color:#475569;white-space:pre-wrap}
+.branding{margin-top:1.4rem;font-size:.78rem;color:#94a3b8}
+.branding a{font-family:'Great Vibes',cursive;font-size:1rem;color:#f472b6;text-decoration:none}
+.badge{display:inline-block;font-size:.7rem;padding:.2rem .55rem;border-radius:999px;background:#f472b6;color:#fff;margin-bottom:.7rem}
+</style></head><body>
+<div class="card">
+  <div class="badge">3 Foto · Album</div>
+  <div class="gallery" id="gallery"><img class="mp" id="photo0" src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&q=80" alt="Foto 1"><img class="mp" id="photo1" src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&q=80" alt="Foto 2"><img class="mp" id="photo2" src="https://images.unsplash.com/photo-1464349153735-7db55fd30e4e?w=400&q=80" alt="Foto 3"></div>
+  <h1 class="title" id="title">Kenangan Kita</h1>
+  <p class="recipient" id="recipient">Kamu</p>
+  <p class="message" id="message">Tiga momen yang selalu kuingat.</p>
+</div>
+<div class="branding" id="branding">Dibuat dengan <a href="index.html">Untuk Kamu</a></div>
+<script>
+(function(){
+  const params=new URLSearchParams(location.search);
+  if(params.get('title')) document.getElementById('title').textContent=params.get('title');
+  if(params.get('recipient')||params.get('name')) document.getElementById('recipient').textContent=params.get('recipient')||params.get('name');
+  if(params.get('message')) document.getElementById('message').textContent=params.get('message');
+  // multi photos from sessionStorage
+  const key=params.get('photosKey');
+  let list=[];
+  if(key){try{list=JSON.parse(sessionStorage.getItem(key)||'[]');}catch(e){}}
+  if(!list.length){
+    const single=params.get('photoKey');
+    if(single){try{const s=sessionStorage.getItem(single);if(s)list=[s];}catch(e){}}
+  }
+  if(!list.length && params.get('photo')) list=[params.get('photo')];
+  list.forEach((src,i)=>{
+    const el=document.getElementById('photo'+i);
+    if(el && src) el.src=src;
+  });
+  if(params.get('hideBranding')==='1') document.getElementById('branding').style.display='none';
+  const color=params.get('color');
+  if(color){
+    document.getElementById('title').style.color=color;
+    document.body.style.background='linear-gradient(135deg,'+color+'33,#fff,'+color+'22)';
+    document.querySelectorAll('.mp').forEach(img=>{img.style.borderColor=color;});
+  }
+})();
+</script>
+<script src="music.js"></script>
+<script>(function(){var p=new URLSearchParams(location.search);if(p.get('music')==='1'&&p.get('musicUrl')&&typeof mountMusicPlayer==='function')mountMusicPlayer({url:p.get('musicUrl'),autoplay:true});})();</script>
+</body></html>

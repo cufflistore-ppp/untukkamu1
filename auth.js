@@ -30,7 +30,7 @@ async function requireAdmin() {
     return null;
   }
   
-  if (user.email !== ADMIN_EMAIL) {
+  if ((user.email || '').trim().toLowerCase() !== (ADMIN_EMAIL || '').trim().toLowerCase()) {
     showToast('Akses ditolak. Hanya admin yang diizinkan.', 'error');
     navigateTo('index.html');
     return null;
@@ -65,7 +65,7 @@ async function createUserProfile(user) {
         balance: 0,
         projectCount: 0,
         purchaseCount: 0,
-        role: user.email === ADMIN_EMAIL ? 'admin' : 'user',
+        role: ((user.email||'').trim().toLowerCase() === (ADMIN_EMAIL||'').trim().toLowerCase()) ? 'admin' : 'user',
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       });

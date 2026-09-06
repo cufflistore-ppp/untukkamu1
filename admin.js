@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const user = await getCurrentUser();
   
-  if (!user || user.email !== ADMIN_EMAIL) {
+  const emailOk = user && (user.email || '').trim().toLowerCase() === (ADMIN_EMAIL || '').trim().toLowerCase();
+  if (!emailOk) {
     document.getElementById('accessDenied').classList.remove('hidden');
     hideLoader();
     return;
