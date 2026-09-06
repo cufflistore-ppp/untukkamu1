@@ -1,4 +1,19 @@
 document.addEventListener('DOMContentLoaded', async () => {
+  // Tampilkan error auth terakhir (jika ada)
+  try {
+    const err = sessionStorage.getItem('uk_auth_err');
+    if (err) {
+      sessionStorage.removeItem('uk_auth_err');
+      const [code, msg] = err.split('|');
+      const box = document.getElementById('loginError') || document.getElementById('registerError');
+      if (box) {
+        box.textContent = (code ? code + ': ' : '') + (msg || 'Login Google gagal');
+        box.classList.add('show');
+      }
+      if (typeof showToast === 'function') showToast(msg || 'Login Google gagal', 'error');
+    }
+  } catch (e) {}
+
   // Always hide loader
   if (typeof hideLoader === 'function') hideLoader();
   setTimeout(() => {
@@ -6,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (l) l.classList.add('hidden');
   }, 400);
 
-  // Handle Google redirect result (setelah user pilih akun Google di mobile)
+  // Handle Google redirect result + cek session (penting di mobile)
   try {
     const redirectedUser = await handleRedirectResult();
     if (redirectedUser) {
@@ -18,11 +33,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.warn('Redirect handle error:', e);
   }
 
-  // Redirect if already logged in
   try {
     const user = await Promise.race([
       getCurrentUser(),
-      new Promise(r => setTimeout(() => r(null), 2500))
+      new Promise(r => setTimeout(() => r(null), 4000))
     ]);
     if (user) {
       navigateTo('profile.html');

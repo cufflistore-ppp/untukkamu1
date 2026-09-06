@@ -100,23 +100,54 @@ async function registerWithEmail(email, password, displayName) {
 
 async function loginWithGoogle() {
   try {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' });
-    
-    // Deteksi mobile → pakai redirect (lebih stabil)
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-    if (isMobile) {
-      await auth.signInWithRedirect(provider);
-      return { success: true, redirect: true };
-    } else {
-      const result = await auth.signInWithPopup(provider);
-      await createUserProfile(result.user);
-      return { success: true, user: result.user };
+    if (!auth) {
+      return { success: false, error: 'Firebase Auth belum siap. Refresh halaman.' };
     }
+
+    try {
+      await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+    } catch (pe) {
+      console.warn('setPersistence', pe);
+    }
+
+    const provider = new firebase.auth.GoogleAuthProvider();
+    // Client ID terdaftar di firebase-config.js (GOOGLE_CLIENT_ID)
+    if (typeof GOOGLE_CLIENT_ID !== 'undefined' && GOOGLE_CLIENT_ID) {
+      try { provider.setCustomParameters(Object.assign({ prompt: 'select_account' }, {})); } catch (e) {}
+    }
+    provider.setCustomParameters({ prompt: 'select_account' });
+    provider.addScope('email');
+    provider.addScope('profile');
+
+    try { sessionStorage.setItem('uk_after_login', 'profile.html'); } catch (e) {}
+    try { sessionStorage.setItem('uk_google_pending', '1'); } catch (e) {}
+
+    // 1) Coba popup dulu (lebih andal di Chrome Android & desktop)
+    try {
+      const result = await auth.signInWithPopup(provider);
+      if (result && result.user) {
+        await createUserProfile(result.user);
+        try { sessionStorage.removeItem('uk_google_pending'); } catch (e) {}
+        return { success: true, user: result.user };
+      }
+    } catch (popupErr) {
+      console.warn('Popup login gagal, coba redirect:', popupErr && popupErr.code, popupErr);
+      // unauthorized-domain / operation-not-allowed → jangan redirect, tampilkan error
+      if (popupErr && (popupErr.code === 'auth/unauthorized-domain' || popupErr.code === 'auth/operation-not-allowed' || popupErr.code === 'auth/invalid-api-key')) {
+        return { success: false, error: mapAuthError(popupErr.code) };
+      }
+      // popup ditutup user
+      if (popupErr && popupErr.code === 'auth/popup-closed-by-user') {
+        return { success: false, error: mapAuthError(popupErr.code) };
+      }
+    }
+
+    // 2) Fallback redirect (iOS / browser ketat)
+    await auth.signInWithRedirect(provider);
+    return { success: true, redirect: true };
   } catch (e) {
     console.error('Google login error:', e);
-    return { success: false, error: mapAuthError(e.code) || e.message };
+    return { success: false, error: mapAuthError(e.code) || e.message || String(e) };
   }
 }
 
@@ -131,7 +162,28 @@ async function handleRedirectResult() {
     }
   } catch (e) {
     console.error('Redirect result error:', e);
+    // Tampilkan error domain jika ada
+    if (e && e.code === 'auth/unauthorized-domain') {
+      if (typeof showToast === 'function') {
+        showToast('Domain belum diizinkan di Firebase Console (Authorized domains).', 'error');
+      }
+    }
   }
+
+  // Fallback: kadang getRedirectResult kosong tapi session sudah ada
+  try {
+    const user = await new Promise((resolve) => {
+      const unsub = auth.onAuthStateChanged(u => {
+        unsub();
+        resolve(u || null);
+      });
+      setTimeout(() => { try { unsub(); } catch (_) {} resolve(null); }, 2500);
+    });
+    if (user) {
+      await createUserProfile(user);
+      return user;
+    }
+  } catch (e) {}
   return null;
 }
 
@@ -158,7 +210,11 @@ function mapAuthError(code) {
     'auth/account-exists-with-different-credential': 'Akun sudah terdaftar dengan metode lain',
     'auth/popup-blocked': 'Popup diblokir browser. Izinkan popup atau coba lagi.',
     'auth/cancelled-popup-request': 'Login dibatalkan',
-    'auth/operation-not-allowed': 'Login Google belum diaktifkan di Firebase Console'
+    'auth/operation-not-allowed': 'Login Google belum diaktifkan di Firebase Console → Authentication → Sign-in method → Google',
+    'auth/unauthorized-domain': 'Domain website belum diizinkan. Tambahkan domain Vercel di Firebase Console → Authentication → Settings → Authorized domains',
+    'auth/internal-error': 'Error internal Firebase. Cek Authorized domains & Google provider.',
+    'auth/invalid-api-key': 'API key Firebase salah',
+    'auth/network-request-failed': 'Koneksi gagal. Coba lagi.'
   };
   return map[code] || 'Terjadi kesalahan. Coba lagi.';
 }

@@ -24,9 +24,18 @@ if (typeof firebase !== 'undefined') {
 // Export references
 const auth = typeof firebase !== 'undefined' ? firebase.auth() : null;
 const db = typeof firebase !== 'undefined' ? firebase.firestore() : null;
+if (auth) {
+  try {
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+    auth.languageCode = 'id';
+  } catch (e) { console.warn('auth init', e); }
+}
 
 // Admin email (server-side validation still required via Firestore Rules)
 const ADMIN_EMAIL = "untukkamuu521@gmail.com";
+
+// Google OAuth Web Client ID (Firebase / Google Cloud)
+const GOOGLE_CLIENT_ID = "206795016846-rkoh7bcgj031ijrue9r03f4sjng11b4h.apps.googleusercontent.com";
 
 // Theme persistence
 function initTheme() {

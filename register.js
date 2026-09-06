@@ -1,5 +1,20 @@
 document.addEventListener('DOMContentLoaded', async () => {
-  // Handle Google redirect result
+  // Tampilkan error auth terakhir (jika ada)
+  try {
+    const err = sessionStorage.getItem('uk_auth_err');
+    if (err) {
+      sessionStorage.removeItem('uk_auth_err');
+      const [code, msg] = err.split('|');
+      const box = document.getElementById('loginError') || document.getElementById('registerError');
+      if (box) {
+        box.textContent = (code ? code + ': ' : '') + (msg || 'Login Google gagal');
+        box.classList.add('show');
+      }
+      if (typeof showToast === 'function') showToast(msg || 'Login Google gagal', 'error');
+    }
+  } catch (e) {}
+
+  // Handle Google redirect result + session
   try {
     const redirectedUser = await handleRedirectResult();
     if (redirectedUser) {
@@ -9,11 +24,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   } catch (e) {}
 
-  const user = await getCurrentUser();
-  if (user) {
-    navigateTo('profile.html');
-    return;
-  }
+  try {
+    const user = await Promise.race([
+      getCurrentUser(),
+      new Promise(r => setTimeout(() => r(null), 4000))
+    ]);
+    if (user) {
+      navigateTo('profile.html');
+      return;
+    }
+  } catch (e) {}
   
   const form = document.getElementById('registerForm');
   const errorEl = document.getElementById('registerError');

@@ -24,9 +24,18 @@ if (typeof firebase !== 'undefined') {
 // Export references
 const auth = typeof firebase !== 'undefined' ? firebase.auth() : null;
 const db = typeof firebase !== 'undefined' ? firebase.firestore() : null;
+if (auth) {
+  try {
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+    auth.languageCode = 'id';
+  } catch (e) { console.warn('auth init', e); }
+}
 
 // Admin email (server-side validation still required via Firestore Rules)
 const ADMIN_EMAIL = "untukkamuu521@gmail.com";
+
+// Google OAuth Web Client ID (Firebase / Google Cloud)
+const GOOGLE_CLIENT_ID = "206795016846-rkoh7bcgj031ijrue9r03f4sjng11b4h.apps.googleusercontent.com";
 
 // Theme persistence
 function initTheme() {
@@ -140,9 +149,64 @@ async function uploadToImgBB(fileOrBase64) {
   return json.data.url;
 }
 
+function enhanceTopBar() {
+  const bar = document.querySelector('.top-bar');
+  if (!bar) return;
+  if (bar.querySelector('.top-bar-right')) return;
+
+  const existingToggle = bar.querySelector('.theme-toggle');
+  const right = document.createElement('div');
+  right.className = 'top-bar-right';
+  right.innerHTML = `
+    <div class="top-bar-balance">
+      <span class="user-balance">Rp0</span>
+      <button type="button" class="topup-plus-btn" title="Top up" aria-label="Top up">
+        <i class="fa-solid fa-plus"></i>
+      </button>
+    </div>
+    <button class="theme-toggle" aria-label="Ganti tema"><i class="fa-solid fa-moon"></i></button>
+    <div class="more-menu-wrap">
+      <button type="button" class="more-menu-btn" aria-label="Menu lain">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="more-dropdown">
+        <a href="lapor-bug.html" data-nav><i class="fa-solid fa-bug"></i> Lapor Bug</a>
+        <a href="https://wruntukkamu.vercel.app" target="_blank" rel="noopener"><i class="fa-solid fa-shield-halved"></i> Website resmi</a>
+        <a href="riwayat.html" data-nav><i class="fa-solid fa-clock-rotate-left"></i> Riwayat</a>
+        <a href="admin.html" class="admin-only hidden" data-nav><i class="fa-solid fa-gear"></i> Admin Panel</a>
+      </div>
+    </div>
+  `;
+  if (existingToggle) existingToggle.remove();
+  bar.appendChild(right);
+
+  const plus = right.querySelector('.topup-plus-btn');
+  if (plus) plus.addEventListener('click', () => navigateTo('topup.html'));
+
+  const moreBtn = right.querySelector('.more-menu-btn');
+  const drop = right.querySelector('.more-dropdown');
+  if (moreBtn && drop) {
+    moreBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      drop.classList.toggle('open');
+    });
+    document.addEventListener('click', () => drop.classList.remove('open'));
+  }
+
+  right.querySelectorAll('[data-nav]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      navigateTo(link.getAttribute('href'));
+    });
+  });
+
+  updateThemeIcon(document.documentElement.getAttribute('data-theme') || 'light');
+}
+
 // Init on every page
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
+  enhanceTopBar();
   hideLoader();
   setTimeout(hideLoader, 1200);
   window.addEventListener('load', hideLoader);
