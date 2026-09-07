@@ -9,6 +9,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="style.css">
+  <script>
+  (function(){
+    try {
+      if (localStorage.getItem('uk_authed') !== '1') {
+        location.replace('login.html');
+      }
+    } catch (e) {}
+  })();
+  </script>
+
 </head>
 <body>
   <div id="page-loader">
@@ -99,20 +109,27 @@
   
       <section class="card mt-2">
         <h2 class="section-title" style="margin-bottom:1rem;"><i class="fa-solid fa-address-book"></i> Hubungi Kami</h2>
+        <ul style="list-style:none;padding:0;margin:0 0 1rem;line-height:1.85;">
+          <li><i class="fa-brands fa-whatsapp" style="color:#25d366;width:1.4rem;"></i> <strong>WhatsApp:</strong> 0858-4272-8134</li>
+          <li><i class="fa-brands fa-telegram" style="color:#2aabee;width:1.4rem;"></i> <strong>Telegram:</strong> @untukkamu521</li>
+          <li><i class="fa-brands fa-instagram" style="color:#e1306c;width:1.4rem;"></i> <strong>Instagram:</strong> @untukkamu896</li>
+          <li><i class="fa-brands fa-tiktok" style="width:1.4rem;"></i> <strong>TikTok:</strong> @untukkamu5210</li>
+          <li><i class="fa-solid fa-envelope" style="color:var(--pink-deep);width:1.4rem;"></i> <strong>Email:</strong> untukkamuu521@gmail.com</li>
+        </ul>
         <div class="grid grid-2" style="gap:0.75rem;">
-          <a class="btn btn-primary w-full" href="https://wa.me/6285842728134" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+          <a class="btn btn-primary w-full" href="https://wa.me/6285842728134" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Chat WhatsApp</a>
           <a class="btn btn-secondary w-full" href="https://t.me/untukkamu521" target="_blank" rel="noopener"><i class="fa-brands fa-telegram"></i> Telegram</a>
           <a class="btn btn-secondary w-full" href="https://www.instagram.com/untukkamu896" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i> Instagram</a>
           <a class="btn btn-secondary w-full" href="https://www.tiktok.com/@untukkamu5210" target="_blank" rel="noopener"><i class="fa-brands fa-tiktok"></i> TikTok</a>
-          <a class="btn btn-secondary w-full" href="mailto:untukkamuu521@gmail.com" style="grid-column:1/-1;"><i class="fa-solid fa-envelope"></i> untukkamuu521@gmail.com</a>
+          <a class="btn btn-secondary w-full" href="mailto:untukkamuu521@gmail.com" style="grid-column:1/-1;"><i class="fa-solid fa-envelope"></i> Email Admin</a>
         </div>
       </section>
 
       <section class="card mt-2">
         <h2 class="section-title" style="margin-bottom:1rem;"><i class="fa-solid fa-clock"></i> Jam Operasional</h2>
         <ul style="list-style:none;padding:0;margin:0;line-height:1.9;">
-          <li><strong>Hari biasa</strong> — Admin/Owner ON: <span style="color:var(--pink-deep);">15.00 – 20.00</span></li>
-          <li><strong>Hari libur</strong> — Admin/Owner ON: <span style="color:var(--pink-deep);">08.00 – 21.00</span></li>
+          <li><strong>Hari biasa</strong> — Admin/Owner ON: <span style="color:var(--pink-deep);font-weight:700;">15.00 – 20.00</span></li>
+          <li><strong>Hari libur</strong> — Admin/Owner ON: <span style="color:var(--pink-deep);font-weight:700;">08.00 – 21.00</span></li>
           <li style="margin-top:0.5rem;color:var(--text-muted);font-size:0.9rem;"><i class="fa-solid fa-circle-info"></i> Hari sibuk: admin akan melayani keesokan harinya.</li>
         </ul>
       </section>

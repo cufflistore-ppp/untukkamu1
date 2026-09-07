@@ -119,7 +119,7 @@ async function loginWithGoogle() {
     provider.addScope('email');
     provider.addScope('profile');
 
-    try { sessionStorage.setItem('uk_after_login', 'profile.html'); } catch (e) {}
+    try { sessionStorage.setItem('uk_after_login', 'index.html'); } catch (e) {}
     try { sessionStorage.setItem('uk_google_pending', '1'); } catch (e) {}
 
     // 1) Coba popup dulu (lebih andal di Chrome Android & desktop)
@@ -190,8 +190,9 @@ async function handleRedirectResult() {
 async function logout() {
   try {
     await auth.signOut();
+    try { localStorage.removeItem('uk_authed'); } catch (e) {}
     showToast('Berhasil keluar', 'success');
-    navigateTo('index.html');
+    navigateTo('login.html');
   } catch (e) {
     showToast('Gagal keluar', 'error');
   }
@@ -229,6 +230,7 @@ function initAuthUI() {
     const adminLinks = document.querySelectorAll('.admin-only');
     
     if (user) {
+      try { localStorage.setItem('uk_authed', '1'); } catch (e) {}
       authButtons.forEach(el => el.classList.add('hidden'));
       userButtons.forEach(el => el.classList.remove('hidden'));
       

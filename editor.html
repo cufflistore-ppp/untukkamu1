@@ -9,6 +9,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="style.css">
+  <script>
+  (function(){
+    try {
+      if (localStorage.getItem('uk_authed') !== '1') {
+        location.replace('login.html');
+      }
+    } catch (e) {}
+  })();
+  </script>
+
 </head>
 <body>
   <div id="page-loader">
@@ -85,8 +95,13 @@
 
           <div class="form-group hidden" id="videoSection">
             <label class="form-label"><i class="fa-solid fa-video"></i> Video (Premium)</label>
-            <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.4rem;">Tempel link YouTube atau file MP4 (URL publik). Tanpa Firebase Storage.</p>
-            <input type="url" id="editVideoUrl" class="form-input" placeholder="https://youtube.com/watch?v=... atau https://....mp4">
+            <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.4rem;">Ambil video dari galeri HP (MP4/WebM, max ~20MB). Video akan tampil di hasil template.</p>
+            <input type="file" id="editVideoFile" class="form-input" accept="video/mp4,video/webm,video/*">
+            <input type="hidden" id="editVideoUrl" value="">
+            <div id="videoPreviewBox" class="mt-1 hidden">
+              <video id="videoPreview" controls playsinline style="max-width:100%;border-radius:12px;max-height:180px;"></video>
+              <button type="button" class="btn btn-danger btn-sm mt-1" id="removeVideo"><i class="fa-solid fa-trash"></i> Hapus Video</button>
+            </div>
           </div>
           
           <div class="form-group">
@@ -130,6 +145,13 @@
             <p id="musicStatus" style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:0.6rem;">
               Proyek gratis belum punya musik. Unlock agar lagu otomatis bunyi saat link dibuka.
             </p>
+            <div class="form-group mt-1" id="musicPickWrap">
+              <label class="form-label">Pilih lagu (tema sama)</label>
+              <select id="musicPickSelect" class="form-input">
+                <option value="">— Default tema —</option>
+              </select>
+              <p style="font-size:0.72rem;color:var(--text-muted);margin-top:0.25rem;">Bisa diganti, tetap satu tema (romance/sahabat/dll).</p>
+            </div>
             <button type="button" class="btn btn-primary btn-sm" id="unlockMusicBtn">
               <i class="fa-solid fa-unlock"></i> Aktifkan Musik — Rp500
             </button>

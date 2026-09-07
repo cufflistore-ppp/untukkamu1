@@ -116,6 +116,73 @@ document.addEventListener('DOMContentLoaded', async () => {
   const videoSection = document.getElementById('videoSection');
   const videoInput = document.getElementById('editVideoUrl');
   const isVideoTpl = !!(project.hasVideo || (project.price && project.price >= 15000) || /video|premium/i.test(project.templateId || ''));
+
+  const videoFileInput = document.getElementById('editVideoFile');
+  const videoPreviewBox = document.getElementById('videoPreviewBox');
+  const videoPreview = document.getElementById('videoPreview');
+  let videoObjectUrl = null;
+  let videoFileBlob = null;
+
+  function showVideoPreview(url) {
+    if (!videoPreview || !videoPreviewBox) return;
+    if (videoObjectUrl) { try { URL.revokeObjectURL(videoObjectUrl); } catch(e){} videoObjectUrl = null; }
+    videoPreview.src = url;
+    videoPreviewBox.classList.remove('hidden');
+    const hid = document.getElementById('editVideoUrl');
+    if (hid && url && !url.startsWith('blob:')) hid.value = url;
+  }
+
+  if (videoFileInput) {
+    videoFileInput.addEventListener('change', () => {
+      const f = videoFileInput.files && videoFileInput.files[0];
+      if (!f) return;
+      if (!f.type.startsWith('video/')) {
+        showToast('Pilih file video (MP4/WebM)', 'warning');
+        return;
+      }
+      if (f.size > 20 * 1024 * 1024) {
+        showToast('Video max 20MB', 'warning');
+        videoFileInput.value = '';
+        return;
+      }
+      videoFileBlob = f;
+      if (videoObjectUrl) URL.revokeObjectURL(videoObjectUrl);
+      videoObjectUrl = URL.createObjectURL(f);
+      showVideoPreview(videoObjectUrl);
+      updatePreview();
+    });
+  }
+  const removeVideoBtn = document.getElementById('removeVideo');
+  if (removeVideoBtn) {
+    removeVideoBtn.addEventListener('click', () => {
+      videoFileBlob = null;
+      if (videoObjectUrl) { URL.revokeObjectURL(videoObjectUrl); videoObjectUrl = null; }
+      if (videoFileInput) videoFileInput.value = '';
+      if (videoPreview) videoPreview.removeAttribute('src');
+      if (videoPreviewBox) videoPreviewBox.classList.add('hidden');
+      const hid = document.getElementById('editVideoUrl');
+      if (hid) hid.value = '';
+      updatePreview();
+    });
+  }
+  if (videoInput && data.videoUrl) {
+    showVideoPreview(data.videoUrl);
+  }
+
+  // Music picker (tema sama)
+  const musicSel = document.getElementById('musicPickSelect');
+  if (musicSel && typeof getMusicOptionsForTemplate === 'function') {
+    const opts = getMusicOptionsForTemplate(project.templateId, project.category);
+    opts.forEach(o => {
+      const op = document.createElement('option');
+      op.value = o.url;
+      op.textContent = o.title || o.id;
+      if (data.musicUrl && data.musicUrl === o.url) op.selected = true;
+      musicSel.appendChild(op);
+    });
+    musicSel.addEventListener('change', () => updatePreview());
+  }
+
   if (videoSection && isVideoTpl) {
     videoSection.classList.remove('hidden');
     if (videoInput && data.videoUrl) videoInput.value = data.videoUrl;
@@ -461,7 +528,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       photo: (photoList[0] || photoDataUrl || null),
       photos: photoList.slice(0, maxPhotos),
       themeColor: themeColor || null,
-      videoUrl: (document.getElementById('editVideoUrl') && document.getElementById('editVideoUrl').value.trim()) || null
+      videoUrl: (document.getElementById('editVideoUrl') && document.getElementById('editVideoUrl').value.trim()) || null,
+      musicUrl: (document.getElementById('musicPickSelect') && document.getElementById('musicPickSelect').value) || null
     };
     
     if (!db || !project.id) {
@@ -472,6 +540,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     try {
+      // Upload video dari galeri
+      if (typeof videoFileBlob !== 'undefined' && videoFileBlob && typeof uploadVideoToHost === 'function') {
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Upload video...';
+        try {
+          newData.videoUrl = await uploadVideoToHost(videoFileBlob);
+          const hid = document.getElementById('editVideoUrl');
+          if (hid) hid.value = newData.videoUrl;
+          videoFileBlob = null;
+        } catch (ve) {
+          showToast(ve.message || 'Upload video gagal', 'error');
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan';
+          return;
+        }
+      }
+
       // Upload semua foto ke ImgBB jika masih data URL
       if (newData.photos && newData.photos.length) {
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Upload foto...';
