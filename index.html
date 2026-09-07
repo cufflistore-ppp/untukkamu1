@@ -16,6 +16,16 @@
   
   <!-- Styles -->
   <link rel="stylesheet" href="style.css">
+  <script>
+  (function(){
+    try {
+      if (localStorage.getItem('uk_authed') !== '1') {
+        location.replace('login.html');
+      }
+    } catch (e) {}
+  })();
+  </script>
+
 </head>
 <body>
   <!-- Page Loader -->
@@ -80,11 +90,11 @@
       </section>
 
       <!-- Intro -->
-      <section class="section text-center">
-        <h2>Platform untuk membuat project personal yang cantik</h2>
-        <p style="max-width: 600px; margin: 0.8rem auto 0;">
-          Pilih template, edit sesuai keinginan, lalu bagikan lewat link permanen. 
-          Cocok untuk surat, ulang tahun, nembak, undangan, dan banyak lagi.
+      <section class="section text-center intro-block">
+        <h2 class="intro-heading">Platform untuk membuat project personal yang cantik</h2>
+        <p class="intro-sub">
+          Pilih template, edit sesuai keinginan, lalu bagikan lewat link permanen.
+          Cocok untuk pacar, bestie, sahabat, keluarga, surat, dan momen spesial. 200-an template · gratis sampai premium video.
         </p>
       </section>
 

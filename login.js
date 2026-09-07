@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const redirectedUser = await handleRedirectResult();
     if (redirectedUser) {
       showToast('Berhasil masuk!', 'success');
-      navigateTo('profile.html');
+      navigateTo('index.html');
       return;
     }
   } catch (e) {
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       new Promise(r => setTimeout(() => r(null), 4000))
     ]);
     if (user) {
-      navigateTo('profile.html');
+      navigateTo('index.html');
       return;
     }
   } catch (e) {
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const result = await loginWithEmail(email, password);
       if (result.success) {
         showToast('Berhasil masuk!', 'success');
-        navigateTo('profile.html');
+        navigateTo('index.html');
       } else {
         errorEl.textContent = result.error || 'Gagal masuk';
         errorEl.classList.add('show');
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             showToast('Mengarahkan ke Google...', 'info');
           } else {
             showToast('Berhasil masuk!', 'success');
-            navigateTo('profile.html');
+            navigateTo('index.html');
           }
         } else {
           showToast(result.error || 'Gagal masuk dengan Google', 'error');

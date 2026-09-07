@@ -233,6 +233,59 @@ const DEFAULT_MUSIC = {
   url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=soft-background-music-40839.mp3'
 };
 
+function getMusicOptionsForTemplate(templateId, category) {
+  // beberapa lagu se-tema untuk dipilih user
+  const cat = (getMusicForTemplate(templateId, category) && category) || category || 'personal';
+  const id = String(templateId || '');
+  let key = 'personal';
+  if (/pacar|cinta|valentine|crush|rindu|sayang|anniversary|jadian|ldt|proposal|romantis|nembak|video-cinta/.test(id)) key = 'romance';
+  else if (/sahabat|bestie|bestod|bros|teman|circle|friend|squad/.test(id)) key = 'friendship';
+  else if (/ibu|ayah|keluarga|family|anak/.test(id)) key = 'family';
+  else if (/idul|natal|tahun-baru|imlek|kemerdekaan|holiday/.test(id)) key = 'holiday';
+  else if (/ultah|wisuda|guru|lulus|celebration/.test(id)) key = 'celebration';
+  else if (/surat|puisi|doa|pesan|letter/.test(id)) key = 'letter';
+  else if (category && CATEGORY_MUSIC[category]) key = category;
+
+  const pool = {
+    romance: [
+      CATEGORY_MUSIC.romance,
+      { id: 'rom2', title: 'Sweet Love Alt', url: 'https://cdn.pixabay.com/download/audio/2021/11/25/audio_91740cf291.mp3?filename=sweet-love-121597.mp3' },
+      { id: 'rom3', title: 'Romantic Soft', url: 'https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3?filename=relaxing-145038.mp3' }
+    ],
+    friendship: [
+      CATEGORY_MUSIC.friendship,
+      { id: 'fr2', title: 'Warm Friends', url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=soft-background-music-40839.mp3' },
+      { id: 'fr3', title: 'Happy Day', url: 'https://cdn.pixabay.com/download/audio/2022/03/24/audio_cda105851b.mp3?filename=happy-birthday-to-you-15487.mp3' }
+    ],
+    family: [
+      CATEGORY_MUSIC.family,
+      { id: 'fam2', title: 'Parents Love', url: 'https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3?filename=relaxing-145038.mp3' }
+    ],
+    holiday: [
+      CATEGORY_MUSIC.holiday,
+      { id: 'hol2', title: 'Celebrate', url: 'https://cdn.pixabay.com/download/audio/2022/03/24/audio_cda105851b.mp3?filename=happy-birthday-to-you-15487.mp3' }
+    ],
+    celebration: [
+      CATEGORY_MUSIC.celebration,
+      { id: 'cel2', title: 'Party Soft', url: 'https://cdn.pixabay.com/download/audio/2022/10/25/audio_191aa2c0b5.mp3?filename=inspiring-cinematic-ambient-116199.mp3' }
+    ],
+    letter: [
+      CATEGORY_MUSIC.letter,
+      { id: 'let2', title: 'Quiet Write', url: 'https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3?filename=relaxing-145038.mp3' }
+    ],
+    personal: [
+      CATEGORY_MUSIC.personal,
+      DEFAULT_MUSIC,
+      { id: 'per2', title: 'Calm Ambient', url: 'https://cdn.pixabay.com/download/audio/2022/10/25/audio_191aa2c0b5.mp3?filename=inspiring-cinematic-ambient-116199.mp3' }
+    ]
+  };
+  const list = pool[key] || pool.personal;
+  // unique by url
+  const seen = new Set();
+  return list.filter(x => x && x.url && not_dup(seen, x.url));
+  function not_dup(seen, u) { if (seen.has(u)) return false; seen.add(u); return true; }
+}
+
 function getMusicForTemplate(templateId, category) {
   // SELALU kembalikan object ber-url agar tidak ada template tanpa lagu
   let track = null;

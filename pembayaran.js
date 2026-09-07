@@ -80,8 +80,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
 
-      showToast('Bukti transfer berhasil dikirim! Admin akan segera memproses.', 'success');
+      showToast('Bukti TF berhasil diupload ke sistem! Admin akan konfirmasi di panel. Tidak perlu WhatsApp.', 'success');
+      const formCard = document.getElementById('buktiFormCard');
+      const okCard = document.getElementById('buktiSuccessCard');
+      if (formCard) formCard.classList.add('hidden');
+      if (okCard) okCard.classList.remove('hidden');
       sessionStorage.removeItem('uk_topup_nominal');
+      setTimeout(() => navigateTo('riwayat.html'), 1500);
       setTimeout(() => navigateTo('profile.html'), 1500);
     } catch (err) {
       console.error(err);

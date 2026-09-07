@@ -236,3 +236,69 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+
+/** Upload video dari galeri (bukan YouTube). Pakai catbox.moe (gratis, tanpa API key). */
+async function uploadVideoToHost(fileOrDataUrl) {
+  let file = fileOrDataUrl;
+  if (typeof fileOrDataUrl === 'string' && fileOrDataUrl.startsWith('data:')) {
+    const res = await fetch(fileOrDataUrl);
+    const blob = await res.blob();
+    file = new File([blob], 'video.mp4', { type: blob.type || 'video/mp4' });
+  }
+  if (!file || !file.size) throw new Error('File video kosong');
+  if (file.size > 20 * 1024 * 1024) throw new Error('Video max 20MB. Kompres dulu atau pilih yang lebih pendek.');
+
+  const fd = new FormData();
+  fd.append('reqtype', 'fileupload');
+  fd.append('fileToUpload', file);
+
+  const resp = await fetch('https://catbox.moe/user/api.php', { method: 'POST', body: fd });
+  const text = (await resp.text()).trim();
+  if (!resp.ok || !text.startsWith('http')) {
+    throw new Error('Upload video gagal. Coba file lebih kecil atau format MP4.');
+  }
+  return text;
+}
+
+
+// ===== Gerbang website: wajib daftar/login dulu =====
+// Halaman publik: login, register, dan link hasil (p.html)
+(function gateWebsite() {
+  try {
+    var file = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+    if (!file || file === '/') file = 'index.html';
+    var openPages = { 'login.html': 1, 'register.html': 1, 'p.html': 1 };
+    if (openPages[file]) {
+      // Kalau sudah login, dari register/login lempar ke beranda
+      if ((file === 'login.html' || file === 'register.html') && auth) {
+        auth.onAuthStateChanged(function (user) {
+          if (user) {
+            try { localStorage.setItem('uk_authed', '1'); } catch (e) {}
+            var next = 'index.html';
+            try { next = sessionStorage.getItem('uk_after_login') || 'index.html'; sessionStorage.removeItem('uk_after_login'); } catch (e) {}
+            if (location.pathname.indexOf('login') !== -1 || location.pathname.indexOf('register') !== -1) {
+              location.replace(next);
+            }
+          }
+        });
+      }
+      return;
+    }
+    if (!auth) {
+      location.replace('login.html');
+      return;
+    }
+    auth.onAuthStateChanged(function (user) {
+      if (user) {
+        try { localStorage.setItem('uk_authed', '1'); } catch (e) {}
+        return;
+      }
+      try { localStorage.removeItem('uk_authed'); } catch (e) {}
+      try { sessionStorage.setItem('uk_after_login', file); } catch (e) {}
+      location.replace('login.html');
+    });
+  } catch (e) {
+    console.warn('gateWebsite', e);
+  }
+})();

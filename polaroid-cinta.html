@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polaroid Cinta</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{{margin:0;padding:0;box-sizing:border-box}}
+body{{font-family:Inter,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#be185d33,#fff,#be185d22);padding:2rem 1rem;color:#1e293b}}
+.card{{background:rgba(255,255,255,.93);backdrop-filter:blur(12px);border-radius:24px;padding:2.2rem 1.6rem;max-width:440px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.12);animation:up .7s ease}}
+@keyframes up{{from{{opacity:0;transform:translateY(24px)}}to{{opacity:1;transform:none}}}}
+.photo{{width:120px;height:120px;border-radius:50%;object-fit:cover;margin:0 auto 1.2rem;border:4px solid #be185d}}
+.photo-grid{{display:grid;gap:8px;margin:0 auto 1.2rem;max-width:100%}}
+.g2{{grid-template-columns:1fr 1fr}}.g3{{grid-template-columns:1fr 1fr 1fr}}.g4{{grid-template-columns:1fr 1fr}}.g5{{grid-template-columns:1fr 1fr 1fr}}
+.photo-m{{width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px;border:2px solid #be185d}}
+.title{{font-family:'Great Vibes',cursive;font-size:2.35rem;color:#be185d;margin-bottom:.35rem}}
+.recipient{{font-size:1.05rem;font-weight:600;color:#64748b;margin-bottom:1rem}}
+.message{{font-size:.98rem;line-height:1.7;color:#475569;white-space:pre-wrap}}
+.branding{{margin-top:1.6rem;font-size:.78rem;color:#94a3b8}}
+.branding a{{font-family:'Great Vibes',cursive;font-size:1rem;color:#be185d;text-decoration:none}}
+
+.card{position:relative;overflow:hidden;border:1.5px solid transparent;background:linear-gradient(rgba(255,255,255,.95),rgba(255,255,255,.95)) padding-box,linear-gradient(135deg,#f472b6,#a78bfa,#38bdf8) border-box;box-shadow:0 24px 70px rgba(167,139,250,.28)!important}
+.photo,.photo-m{box-shadow:0 0 0 3px rgba(255,255,255,.6),0 0 24px #be185d66!important}
+.badge-vid,.badge-prem{display:inline-block;font-size:.7rem;padding:.25rem .6rem;border-radius:999px;background:linear-gradient(135deg,#fbbf24,#f472b6);color:#1e293b;font-weight:700;margin-bottom:.8rem}
+
+</style></head><body>
+<div class="card">
+  <div class='badge-prem' style='background:linear-gradient(135deg,#60a5fa,#a78bfa)'>Berbayar</div>
+  
+  <div class="photo-grid g3"><img class="photo-m" id="photo1" src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&q=80" alt=""><img class="photo-m" id="photo2" src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&q=80" alt=""><img class="photo-m" id="photo3" src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=600&q=80" alt=""></div>
+  <h1 class="title" id="title">Polaroid Cinta</h1>
+  <p class="recipient" id="recipient">Untuk Kamu</p>
+  <p class="message" id="message">Gaya polaroid romantis 3 foto.</p>
+</div>
+<div class="branding" id="branding">Dibuat dengan <a href="index.html">Untuk Kamu</a></div>
+<script src="music.js"></script>
+<script>
+(function(){{
+  const params=new URLSearchParams(location.search);
+  if(params.get('title')) document.getElementById('title').textContent=params.get('title');
+  if(params.get('recipient')||params.get('name')) document.getElementById('recipient').textContent=params.get('recipient')||params.get('name');
+  if(params.get('message')) document.getElementById('message').textContent=params.get('message');
+  if(params.get('photo')) {{ const p=document.getElementById('photo'); if(p) p.src=params.get('photo'); }}
+  for(let i=1;i<=8;i++){{ const u=params.get('photo'+i); const el=document.getElementById('photo'+i); if(u&&el) el.src=u; }}
+  if(params.get('hideBranding')==='1'){{ const b=document.getElementById('branding'); if(b) b.style.display='none'; }}
+  (function(){{
+    var v=params.get('video'); var wrap=document.getElementById('videoWrap'); var inner=document.getElementById('videoInner');
+    if(!v||!wrap) return; wrap.style.display='block';
+    if(!inner){{inner=document.createElement('div');inner.id='videoInner';wrap.appendChild(inner);}}
+    v=decodeURIComponent(v);
+    if(/youtube|youtu\.be|vimeo/i.test(v)){{ inner.innerHTML='<p style="padding:0.8rem;font-size:0.85rem;color:#64748b">Video dari galeri HP, bukan YouTube.</p>'; return; }}
+    inner.innerHTML='<video controls playsinline autoplay muted loop preload="metadata" src="'+v.replace(/"/g,'&quot;')+'" style="width:100%;max-height:240px;background:#000"></video>';
+  }})();
+  try {{
+    const p=params;
+    if(p.get('music')==='1' && p.get('musicUrl') && typeof mountMusicPlayer==='function'){{
+      mountMusicPlayer({{url:p.get('musicUrl'), autoplay:true, title:'Musik'}});
+    }}
+  }} catch(e){{}}
+}})();
+</script>
+</body></html>

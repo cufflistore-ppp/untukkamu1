@@ -9,6 +9,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="style.css">
+  <script>
+  (function(){
+    try {
+      if (localStorage.getItem('uk_authed') !== '1') {
+        location.replace('login.html');
+      }
+    } catch (e) {}
+  })();
+  </script>
+
 </head>
 <body>
   <div id="page-loader">
@@ -60,23 +70,37 @@
         <div class="stat-value" id="displayNominal" style="font-size: 2rem; color: var(--pink);">Rp0</div>
       </div>
       
+      <!-- Langkah -->
+      <div class="card mb-2" style="padding:1rem 1.1rem;">
+        <p style="font-weight:700;margin:0 0 0.6rem;"><i class="fa-solid fa-list-ol"></i> Cara top up (wajib ikuti)</p>
+        <ol style="margin:0;padding-left:1.2rem;line-height:1.75;font-size:0.9rem;color:var(--text-secondary);">
+          <li><strong>Transfer</strong> sesuai nominal lewat QRIS di bawah.</li>
+          <li><strong>Screenshot</strong> bukti transfer dari e-wallet / m-banking.</li>
+          <li><strong>Upload bukti di halaman ini</strong> (kotak upload), lalu klik kirim.</li>
+          <li>Tunggu admin konfirmasi di panel — saldo masuk ke akun Google/email kamu.</li>
+        </ol>
+        <p style="margin:0.7rem 0 0;font-size:0.82rem;color:#f87171;">
+          <i class="fa-solid fa-ban"></i> <strong>Jangan kirim bukti ke WhatsApp.</strong> Semua lewat sistem di sini.
+        </p>
+      </div>
+
       <!-- QRIS -->
       <div class="qris-box">
-        <h3><i class="fa-solid fa-qrcode"></i> Scan QRIS</h3>
+        <h3><i class="fa-solid fa-qrcode"></i> 1. Scan QRIS & transfer</h3>
         <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0.5rem 0;">
-          Scan QRIS di bawah menggunakan aplikasi e-wallet atau mobile banking.
+          Scan pakai e-wallet / mobile banking. Nominal harus sama dengan yang tertera di atas.
         </p>
         <img src="qris.jpg" alt="QRIS Admin" class="qris-img" id="qrisImage">
         <p style="font-size: 0.8rem; color: var(--text-muted);">Transfer sesuai nominal di atas</p>
       </div>
       
       <!-- Form Upload Bukti TF -->
-      <div class="card" style="padding: 1.5rem;">
+      <div class="card" style="padding: 1.5rem;" id="buktiFormCard">
         <div class="form-group">
-          <label class="form-label">Upload Bukti Transfer</label>
+          <label class="form-label">2. Upload bukti TF ke sistem (bukan WA)</label>
           <div class="upload-area" id="buktiUploadArea" style="border: 2px dashed var(--border); border-radius: 12px; padding: 24px; text-align: center; cursor: pointer;">
-            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 1.8rem; color: var(--text-muted); margin-bottom: 8px; display: block;"></i>
-            <span style="color: var(--text-muted); font-size: 0.9rem;">Klik atau drag screenshot bukti TF</span>
+            <i class="fa-solid fa-image" style="font-size: 1.8rem; color: var(--text-muted); margin-bottom: 8px; display: block;"></i>
+            <span style="color: var(--text-muted); font-size: 0.9rem;">Ketuk untuk pilih screenshot dari galeri</span>
             <input type="file" id="buktiFile" accept="image/*" hidden>
           </div>
           <div id="buktiPreview" style="margin-top: 12px; display: none; text-align: center;">
@@ -85,12 +109,26 @@
         </div>
         
         <button type="button" class="btn btn-primary w-full" id="submitBuktiBtn" disabled>
-          <i class="fa-solid fa-paper-plane"></i> Kirim Bukti Transfer
+          <i class="fa-solid fa-cloud-arrow-up"></i> 3. Kirim bukti ke sistem
         </button>
         
-        <p class="text-center mt-2" style="font-size: 0.85rem; color: var(--text-muted);">
-          Setelah upload, admin akan memeriksa dan menambahkan saldo secara otomatis. Tidak perlu hubungi WhatsApp.
+        <div class="card mt-2" style="padding:0.9rem 1rem;background:var(--bg-secondary);border:1px dashed var(--border-color);">
+          <p style="font-size:0.85rem;color:var(--text-secondary);margin:0;line-height:1.55;">
+            Bukti masuk ke <strong>panel admin</strong> otomatis (ImgBB + Firestore).
+            Admin cukup konfirmasi — saldo bertambah di akunmu.
+          </p>
+        </div>
+      </div>
+
+      <div class="card hidden" id="buktiSuccessCard" style="padding:1.4rem;text-align:center;">
+        <i class="fa-solid fa-circle-check" style="font-size:2.4rem;color:#34d399;"></i>
+        <h3 style="margin:0.6rem 0 0.3rem;">Bukti TF terkirim!</h3>
+        <p style="color:var(--text-secondary);font-size:0.9rem;margin:0 0 1rem;">
+          Menunggu konfirmasi admin. Tidak perlu chat WhatsApp.
+          Cek saldo di beranda / profil setelah disetujui.
         </p>
+        <a href="riwayat.html" class="btn btn-secondary btn-sm" data-nav><i class="fa-solid fa-clock-rotate-left"></i> Lihat riwayat</a>
+        <a href="index.html" class="btn btn-primary btn-sm" data-nav style="margin-left:0.4rem;"><i class="fa-solid fa-house"></i> Beranda</a>
       </div>
     </div>
   </main>
