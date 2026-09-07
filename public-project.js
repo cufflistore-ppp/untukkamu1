@@ -75,24 +75,29 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Video premium (YouTube / MP4 URL)
     if (data.videoUrl) qs.set('video', data.videoUrl);
+    if (data.musicUrl) {
+      qs.set('music', '1');
+      qs.set('musicUrl', data.musicUrl);
+    }
 
     if (!project.isFree && project.price > 0) {
       qs.set('hideBranding', '1');
     }
 
     const track = typeof getMusicForTemplate === 'function'
-      ? getMusicForTemplate(templateId)
+      ? getMusicForTemplate(templateId, project.category)
       : null;
 
-    if (project.musicEnabled && track) {
-      qs.set('music', '1');
-      qs.set('musicUrl', track.url);
-      if (typeof mountMusicPlayer === 'function') {
-        mountMusicPlayer({
-          url: track.url,
-          title: track.title,
-          autoplay: true
-        });
+    // Musik wajib bunyi jika sudah di-unlock (pilih user atau default tema)
+    if (project.musicEnabled) {
+      const url = (data.musicUrl) || (track && track.url);
+      const title = (track && track.title) || 'Musik';
+      if (url) {
+        qs.set('music', '1');
+        qs.set('musicUrl', url);
+        if (typeof mountMusicPlayer === 'function') {
+          mountMusicPlayer({ url, title, autoplay: true });
+        }
       }
     }
 

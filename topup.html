@@ -9,6 +9,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="style.css">
+  <script>
+  (function(){
+    try {
+      if (localStorage.getItem('uk_authed') !== '1') {
+        location.replace('login.html');
+      }
+    } catch (e) {}
+  })();
+  </script>
+
 </head>
 <body>
   <div id="page-loader">
@@ -87,10 +97,13 @@
         <ol style="font-size: 0.9rem; color: var(--text-secondary); padding-left: 1.2rem;">
           <li style="margin-bottom: 0.4rem;">Masukkan nominal yang ingin diisi</li>
           <li style="margin-bottom: 0.4rem;">Klik <strong>Lanjut ke Pembayaran</strong></li>
-          <li style="margin-bottom: 0.4rem;">Scan QRIS lalu transfer sesuai nominal</li>
-          <li style="margin-bottom: 0.4rem;">Kirim bukti transfer via WhatsApp</li>
-          <li>Admin akan cek dan saldo akan ditambahkan</li>
+          <li style="margin-bottom: 0.4rem;">Scan QRIS lalu transfer <strong>sesuai nominal</strong></li>
+          <li style="margin-bottom: 0.4rem;"><strong>Upload bukti TF di halaman pembayaran</strong> — masuk ke sistem, <em>bukan</em> WhatsApp</li>
+          <li>Admin cek di panel → saldo masuk otomatis ke akunmu</li>
         </ol>
+        <p style="font-size:0.8rem;color:var(--text-muted);margin-top:0.75rem;">
+          <i class="fa-solid fa-shield-halved"></i> Bukti hanya dikirim lewat website. Tidak perlu chat admin.
+        </p>
       </div>
     </div>
   </main>

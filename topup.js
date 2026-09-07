@@ -1,7 +1,6 @@
-const WA_NUMBER = '6285842728134';
-// Nomor WhatsApp admin (format internasional tanpa +)
-// GANTI dengan nomor WhatsApp kamu yang aktif
-const ADMIN_WA = '6285842728134';
+// Top up: setelah pilih nominal → pembayaran.html → upload bukti TF ke sistem (ImgBB + Firestore).
+// JANGAN arahkan user kirim bukti ke WhatsApp.
+const WA_NUMBER = '6285842728134'; // kontak umum saja (halaman Tentang)
 
 document.addEventListener('DOMContentLoaded', async () => {
   const user = await requireAuth();
